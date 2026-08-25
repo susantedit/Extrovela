@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/features/personalization",
+    "src/components/screens/ProfileScreen.tsx",
+    "src/components/screens/MemoriesScreen.tsx",
+    "src/context/AppStateContext.tsx",
+    "src/services/questEngineService.ts",
+    "src/__tests__/phase11.test.ts",
+    "src/vite-env.d.ts"
+  ]
+}

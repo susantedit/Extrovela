@@ -1,0 +1,10 @@
+{
+  "loopSteps": [
+    { "step": 1, "name": "Choose State", "description": "Select available time, energy, mood, budget, environment, season, and city." },
+    { "step": 2, "name": "Receive 3 Quest Options", "description": "Review 3 distinct personalized quest cards tailored to your parameters." },
+    { "step": 3, "name": "Experience", "description": "Step outside or begin experience with phone-free focus mode." },
+    { "step": 4, "name": "Capture & Reflect", "description": "Log photo snapshot, voice note, mood rating, and reflection note." },
+    { "step": 5, "name": "Remember", "description": "View logged memory in Calendar Journal and open-world Fog-of-War Life Map." },
+    { "step": 6, "name": "Discover More", "description": "Receive anti-gamification recaps and routine-breaker suggestions." }
+  ]
+}

@@ -1,0 +1,10 @@
+# Defense-in-depth: the root .gitignore already excludes server/.env, but this
+# guards the live secret even if the server/ folder is ever initialized as its
+# own git repository. Commit server/.env.example only.
+node_modules/
+.env
+.env.local
+.env.*.local
+!.env.example
+*.log
+npm-debug.log*

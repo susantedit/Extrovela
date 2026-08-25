@@ -1,0 +1,18 @@
+{
+  "theme": "Instagram-Inspired Premium Dark Glow",
+  "typography": {
+    "display": "'Outfit', sans-serif",
+    "body": "'Plus Jakarta Sans', sans-serif",
+    "mono": "'JetBrains Mono', monospace"
+  },
+  "colors": {
+    "bgPrimary": "#08090D",
+    "bgCard": "rgba(22, 26, 38, 0.75)",
+    "accentAmber": "#F59E0B",
+    "accentSunset": "#F43F5E",
+    "accentViolet": "#8B5CF6",
+    "accentCyan": "#06B6D4",
+    "textPrimary": "#F9FAFB",
+    "textSecondary": "#9CA3AF"
+  }
+}

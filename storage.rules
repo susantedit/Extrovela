@@ -1,0 +1,134 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ═══════════════════════════════════════════════════════════
+    // Helpers
+    // ═══════════════════════════════════════════════════════════
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Content type is checked against an explicit allow-list rather than a broad
+    // `image/.*` wildcard: that pattern also matches `image/svg+xml`, which can
+    // carry executable script and would then be served from our own origin.
+    function isValidImage() {
+      return request.resource.contentType in ['image/jpeg', 'image/png', 'image/webp', 'image/heic']
+        && request.resource.size > 0
+        && request.resource.size < 10 * 1024 * 1024; // 10 MB
+    }
+
+    function isValidVideo() {
+      return request.resource.contentType in ['video/mp4', 'video/quicktime', 'video/webm']
+        && request.resource.size > 0
+        && request.resource.size < 50 * 1024 * 1024; // 50 MB
+    }
+
+    // Thumbnails are always re-encoded to JPEG by the client before upload.
+    function isValidThumbnail() {
+      return request.resource.contentType == 'image/jpeg'
+        && request.resource.size > 0
+        && request.resource.size < 1 * 1024 * 1024; // 1 MB
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // Default deny
+    // ═══════════════════════════════════════════════════════════
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // Profile avatars
+    // ═══════════════════════════════════════════════════════════
+    // Readable by any signed-in user because avatars appear in friend lists and
+    // handle search results.
+    match /users/{userId}/profile/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId) && isValidImage();
+      allow delete: if isOwner(userId);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // Memory media (Phase 7, corrected in Phase 12)
+    // ═══════════════════════════════════════════════════════════
+    //
+    // BUG FIXED HERE. The previous rule matched only
+    //     users/{userId}/memories/{memoryId}/{fileName}
+    // but mediaStorageService.ts has always uploaded to
+    //     users/{userId}/memories/{memoryId}/{folder}/{mediaId}.{ext}
+    // — one segment deeper, with `folder` being `photos` or `videos`. Storage
+    // rules do not match across a `/`, so every media upload fell through to the
+    // default-deny at the top of this file. Memory media upload was silently
+    // broken in production, and the client's catch block reported it as a
+    // generic network failure, which is why it did not surface as a rules issue.
+    //
+    // Both the correct nested path and the legacy flat path are now matched.
+
+    // Photos: users/{userId}/memories/{memoryId}/photos/{fileName}
+    match /users/{userId}/memories/{memoryId}/photos/{fileName} {
+      allow read: if isOwner(userId);
+      // `thumb_` files are the generated previews; everything else is a full image.
+      allow write: if isOwner(userId)
+        && (fileName.matches('^thumb_.*') ? isValidThumbnail() : isValidImage());
+      allow delete: if isOwner(userId);
+    }
+
+    // Videos: users/{userId}/memories/{memoryId}/videos/{fileName}
+    // A video's poster frame is a JPEG stored alongside it, hence the thumb branch.
+    match /users/{userId}/memories/{memoryId}/videos/{fileName} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId)
+        && (fileName.matches('^thumb_.*') ? isValidThumbnail() : isValidVideo());
+      allow delete: if isOwner(userId);
+    }
+
+    // Legacy flat path still written by firebaseStorage.ts:
+    //     users/{userId}/memories/{memoryId}.jpg
+    match /users/{userId}/memories/{fileName} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && isValidImage();
+      allow delete: if isOwner(userId);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // Share card renders (Phase 12)
+    // ═══════════════════════════════════════════════════════════
+    //
+    // PUBLICLY READABLE, deliberately: an Open Graph crawler (Slack, WhatsApp,
+    // Twitter) fetches these unauthenticated, so a signed URL or an auth check
+    // would break every link preview.
+    //
+    // Two properties keep that safe, and both are the writing client's
+    // responsibility rather than something a rule can verify:
+    //   1. `token` is high-entropy random — never the userId, never a Firestore
+    //      document ID. The path is therefore unguessable and reveals nothing.
+    //   2. The image is a RENDERED CARD, not the user's original media. Private
+    //      photos are never copied here; ShareExperienceCardService composes a
+    //      new image from only the fields the user approved in the share preview.
+    //
+    // Revoking a share deletes this object as well as the /shareLinks document,
+    // so a leaked link stops resolving to an image too.
+    match /shareCards/{userId}/{token}/{fileName} {
+      allow read: if true;
+      allow write: if isOwner(userId) && isValidImage();
+      allow delete: if isOwner(userId);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // Temporary uploads
+    // ═══════════════════════════════════════════════════════════
+    // Staging area for a media item whose memory has not been created yet
+    // (offline drafts). The client moves these into the memory tree on sync.
+    match /users/{userId}/uploads/{fileName} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && (isValidImage() || isValidVideo());
+      allow delete: if isOwner(userId);
+    }
+  }
+}

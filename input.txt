@@ -1,0 +1,97 @@
+================================================================================
+EXTROVELA — Core App Specification & Requirements Document
+================================================================================
+
+1. OVERVIEW & MISSION
+--------------------------------------------------------------------------------
+Name: EXTROVELA
+Tagline: Stop scrolling. Start experiencing. Don't just get through your day. Make it different.
+Core Vision: Personalized real-world experience app designed to help people break out of repetitive routines, discover new places, try new things, and create meaningful memories.
+Goal: Transform routine daily living into an open-world exploration, helping users build stories to tell rather than completing generic productive to-do tasks.
+
+2. CORE PROBLEM & SOLUTION
+--------------------------------------------------------------------------------
+Problem:
+- People get trapped in repetitive daily routines.
+- Wanting to go out or experience something new, but lacking ideas, motivation, or guidance.
+- Feeling bored, spending too much time on screens, or doing solo activities passively.
+
+Solution:
+- EXTROVELA acts as a personal real-world quest generator that dynamically builds contextual, achievable, surprising, and memorable real-life quests tailored to the user's immediate state and surrounding world.
+
+3. FUNDAMENTAL PRODUCT LOOP
+--------------------------------------------------------------------------------
+Choose Parameters ---> Receive Quest ---> Experience in Real Life ---> Capture & Reflect ---> Remember in Journal & Map ---> Discover More
+
+4. DYNAMIC QUEST INPUT MATRIX (USER STATE & CONTEXT)
+--------------------------------------------------------------------------------
+Before receiving a quest, the user configures or detects:
+- Available Time: 15 mins | 30 mins | 1 hour | 2+ hours | Half day / Full day
+- Energy Level: Chill / Low | Moderate | High Energy | Adventurous
+- Current Mood: Reflective | Curious | Playful | Social | Peaceful | Spontaneous
+- Budget: Free ($0) | Low ($) | Moderate ($$) | Treat Myself ($$$)
+- Social Preference: Solo | Low-Pressure Social | With a Friend | Group Adventure
+- Environment: Indoor | Outdoor | Urban Street | Nature / Park | Cozy Local Spot | Unfamiliar District
+- Contextual Factors (Auto/Detected):
+  * Real-Time Location (e.g., Kathmandu, Pokhara, Tokyo, London, local neighborhood)
+  * Weather & Temperature (Sunny, Rainy, Golden Hour, Chilly)
+  * Time of Day & Sunset Timing
+  * Local place data & points of interest
+
+5. QUEST GENERATION & VARIETY ENGINE
+--------------------------------------------------------------------------------
+- Personal, contextual, achievable, unexpected quests (not generic AI tasks).
+- Routine Breaker Logic:
+  * Detects repetition (e.g. if 3 consecutive indoor quests were chosen, suggests outdoor).
+  * Encourages gentle social stepping if user is exclusively solo.
+  * Prompts exploration of unseen streets/neighborhoods if user stays in safe zones.
+- Example Quests:
+  * "Watch the clouds for 15 minutes without using your phone."
+  * "Watch a Studio Ghibli movie with no phone in your hand."
+  * "Call a friend you haven't spoken to in years."
+  * "Watch the sunset from a viewpoint you've never visited in [City]."
+  * "Give genuine compliments to five people."
+  * "Read a book alone in a café in [Neighborhood]."
+  * "Take a public bus you've never taken and explore the final stop."
+  * "Find a street in [City] you've never walked through."
+  * "Make a fancy drink from scratch."
+  * "Go somewhere alone and document what you discover."
+
+6. JOURNAL, LIFE MAP & MEMORY ENGINE
+--------------------------------------------------------------------------------
+- Quest Completion & Reflection:
+  * Rate experience & mood log.
+  * Upload photo / video / voice snippet.
+  * Write short personal reflection note.
+- Calendar Journal:
+  * Visual memory grid showing completed quests by date.
+  * Filterable by mood, place, and tags.
+- Interactive Life Map (Open-World Fog of War):
+  * Explored real-world areas get revealed on a custom interactive map.
+  * Pin completed quests with photo memories attached.
+  * Unexplored areas remain soft fogged, encouraging organic exploration.
+
+7. MEANINGFUL METRICS & RECAPS (ANTI-GAMIFICATION)
+--------------------------------------------------------------------------------
+- NO addictive streaks, pressure points, or task-master productivity scores.
+- Positive Experience Metrics:
+  * New places discovered
+  * First-time experiences unlocked
+  * Memories created
+  * Percentage of city explored
+  * Routine break score
+- Personal Recaps (e.g., "Your August"):
+  * 18 experiences | 11 new places | 7 solo adventures | 4 social experiences | 5 sunsets | 23 memories | 12 first-time experiences
+
+8. SOCIAL & SAFETY FEATURES
+--------------------------------------------------------------------------------
+- Shareable Quest Cards (for friends to join or try).
+- Public Quest Matcher: Option to find local users interested in the same quest with strict privacy controls & safety flags.
+
+9. UI/UX & DESIGN SYSTEM SPECIFICATIONS
+--------------------------------------------------------------------------------
+- Aesthetic: Modern, high-end, ultra-premium experience design.
+- Color Palette: Deep dark ambient mode + warm golden light mode accents, sleek glassmorphism, organic vibrant gradients.
+- Typography: Instagram-inspired typography (Instagram Sans vibe using fonts like 'Plus Jakarta Sans', 'Outfit', and 'Inter' with custom letter-spacing, clean geometry, and high contrast display headers).
+- Interactions: Micro-animations, fluid page transitions, dynamic tactile feedback, visually striking card designs.
+================================================================================

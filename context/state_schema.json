@@ -1,0 +1,28 @@
+{
+  "memorySchema": {
+    "id": "string",
+    "questId": "string",
+    "questTitle": "string",
+    "completedAt": "ISO date string",
+    "moodRating": "number (1-5)",
+    "reflectionText": "string",
+    "photoUrl": "string",
+    "location": {
+      "city": "string",
+      "lat": "number",
+      "lng": "number",
+      "placeName": "string"
+    },
+    "isFirstTimeExperience": "boolean",
+    "tags": "array of strings"
+  },
+  "lifeMapSchema": {
+    "revealedZones": "array of coordinate objects",
+    "memoryPins": "array of memory objects"
+  },
+  "userPreferences": {
+    "homeCity": "Kathmandu | Pokhara | Custom",
+    "seasonPreference": "Auto (Garimahina/Jadamahina)",
+    "theme": "dark"
+  }
+}

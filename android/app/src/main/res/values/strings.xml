@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">EXTROVELA</string>
+    <string name="title_activity_main">EXTROVELA</string>
+    <string name="package_name">app.extrovela.mobile</string>
+    <string name="custom_url_scheme">app.extrovela.mobile</string>
+</resources>

@@ -1,0 +1,703 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ═══════════════════════════════════════════════════════════
+    // Helper functions
+    // ═══════════════════════════════════════════════════════════
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidTimestamp(ts) {
+      return ts is timestamp;
+    }
+
+    // ── Phase 11 validation helpers ──
+    //
+    // WHAT THESE CAN AND CANNOT DO — read this before trusting them.
+    //
+    // This project has NO Cloud Functions (see the Phase 11 report). Derived
+    // personalization data is therefore computed ON THE CLIENT and mirrored here.
+    // That means rules cannot verify that a confidence value was *correctly*
+    // derived — only that it is well-formed, in range, and that the fields which
+    // give a signal its authority cannot be tampered with after the fact.
+    //
+    // What is genuinely enforced:
+    //   - raw events are append-only (immutable once written)
+    //   - `source` is drawn from a closed set and can never be changed on update,
+    //     so an inferred signal cannot be relabelled `userExplicit` to outrank
+    //     the user's real stated preferences
+    //   - `systemGenerated` is immutable, so a user-authored memory cannot be
+    //     promoted into a system fact
+    //   - confidence/strength/freshness stay inside their mathematical ranges
+    //   - lineage (`sourceEventIds`) cannot be stripped
+    //
+    // What is NOT enforced and requires server-authoritative derivation:
+    //   - that confidence actually reflects sampleCount
+    //   - that a derived statement contains no sensitive inference
+    //     (rules cannot run text analysis; sensitiveAttributeGuard.ts does this
+    //      on the client before write)
+
+    function isFraction(v) {
+      return v is number && v >= 0 && v <= 1;
+    }
+
+    function isSignedFraction(v) {
+      return v is number && v >= -1 && v <= 1;
+    }
+
+    function allowedSignalSource(v) {
+      return v in [
+        'userExplicit', 'inferredCompletion', 'inferredRating', 'inferredRejection',
+        'inferredSkip', 'inferredMemory', 'inferredSocial', 'backfill'
+      ];
+    }
+
+    function allowedEventSource(v) {
+      return v in [
+        'questEngine', 'memoryJournal', 'discoveryFeed', 'notification',
+        'map', 'social', 'userExplicit', 'backfill'
+      ];
+    }
+
+    function allowedDimension(v) {
+      return v in [
+        'experienceType', 'category', 'socialMode', 'environment', 'duration',
+        'budget', 'timeOfDay', 'distance', 'indoorOutdoor', 'novelty',
+        'pace', 'setting', 'weatherPreference'
+      ];
+    }
+
+    // A field that must never change once the document exists.
+    function unchanged(field) {
+      return !(field in request.resource.data.diff(resource.data).affectedKeys())
+        || request.resource.data[field] == resource.data[field];
+    }
+
+    // ── Phase 14 social helpers ──
+    //
+    // Group membership is authoritative in the `members` subcollection, so a
+    // session's authorization questions ("is this caller the creator?", "is this
+    // caller an OWNER/ADMIN?") are answered by reading those docs. Each helper
+    // costs one get()/exists(); a single group write stays well under Firestore's
+    // 10-document access budget per rule evaluation.
+    function sessionCreatorId(sessionId) {
+      return get(/databases/$(database)/documents/groupQuestSessions/$(sessionId)).data.creatorId;
+    }
+
+    function isSessionMember(sessionId, uid) {
+      return exists(/databases/$(database)/documents/groupQuestSessions/$(sessionId)/members/$(uid));
+    }
+
+    function isSessionManager(sessionId, uid) {
+      return isSessionMember(sessionId, uid)
+        && get(/databases/$(database)/documents/groupQuestSessions/$(sessionId)/members/$(uid)).data.role in ['OWNER', 'ADMIN'];
+    }
+
+    // No block doc exists in EITHER direction between two users. Both directional
+    // ids are checked so precedence holds regardless of who blocked whom.
+    function noBlockBetween(a, b) {
+      return !exists(/databases/$(database)/documents/userBlocks/$(a + '__' + b))
+        && !exists(/databases/$(database)/documents/userBlocks/$(b + '__' + a));
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // Default deny all
+    // ═══════════════════════════════════════════════════════════
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 1. User Profiles (/users/{userId})
+    // ═══════════════════════════════════════════════════════════
+    match /users/{userId} {
+      // The full profile document (email, preferences, private settings) is
+      // OWNER-ONLY. Cross-user display data (handle, display name, avatar)
+      // belongs in the public/ subcollection below, so restricting this read
+      // does not block future handle search or friend display — it stops the
+      // private profile from being world-readable to any signed-in account (§33).
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && request.resource.data.id == userId
+        && request.resource.data.keys().hasAll(['id', 'createdAt', 'updatedAt']);
+      allow update: if isOwner(userId)
+        && request.resource.data.id == userId
+        && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if isOwner(userId);
+
+      // Public, non-sensitive display fields (handle, displayName, avatarUrl)
+      // for handle search and friend display. Readable by any signed-in user;
+      // writable only by the owner. Sensitive fields (email, preferences,
+      // private settings) MUST stay in the owner-only profile document above.
+      // (Social is not yet Firestore-backed; this is the forward-compatible
+      // home for its public reads.)
+      match /public/{publicDocId} {
+        allow read: if isAuthenticated();
+        allow write: if isOwner(userId);
+      }
+
+      // ─── Phases 1–10 subcollections ───
+
+      match /preferences/{preferenceId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /quests/{questId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /questAttempts/{attemptId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /memories/{memoryId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /reflections/{reflectionId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /exploration/{explorationId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /notifications/{notificationId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /deviceTokens/{tokenId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /recaps/{recapId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      match /settings/{settingId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // ═════════════════════════════════════════════════════════
+      // Phase 11 — Experience Intelligence (all user-owned)
+      // ═════════════════════════════════════════════════════════
+
+      // Raw experience events. APPEND-ONLY: the audit trail that every derived
+      // value is reconstructed from. If these were mutable, "rebuild the profile
+      // from raw events" would prove nothing.
+      match /experienceEvents/{eventId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == userId
+          && request.resource.data.id is string
+          && request.resource.data.type is string
+          && allowedEventSource(request.resource.data.source)
+          && request.resource.data.schemaVersion is int
+          && request.resource.data.createdAt is string;
+        // No update rule at all: raw history is immutable.
+        allow update: if false;
+        // Delete IS permitted — deletion propagation and erasure require it.
+        allow delete: if isOwner(userId);
+      }
+
+      // Learned preference signals.
+      match /preferenceSignals/{signalId} {
+        allow read: if isOwner(userId);
+
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == userId
+          && allowedDimension(request.resource.data.dimension)
+          && request.resource.data.value is string
+          && isSignedFraction(request.resource.data.strength)
+          && isFraction(request.resource.data.confidence)
+          && allowedSignalSource(request.resource.data.source)
+          && request.resource.data.sampleCount is int
+          && request.resource.data.sampleCount >= 0
+          && request.resource.data.sourceEventIds is list;
+
+        allow update: if isOwner(userId)
+          // Ranges still hold after the update.
+          && isSignedFraction(request.resource.data.strength)
+          && isFraction(request.resource.data.confidence)
+          && request.resource.data.sampleCount is int
+          && request.resource.data.sampleCount >= 0
+          // Identity of the signal cannot drift.
+          && unchanged('dimension')
+          && unchanged('value')
+          && unchanged('userId')
+          // THE IMPORTANT ONE: authority cannot be forged.
+          //
+          // `source` may only stay the same, or become 'userExplicit' as part of
+          // a genuine user correction (preferenceSignalService.correctSignal
+          // promotes an inferred signal when the user overrides it, and sets
+          // userCorrected in the same write). Every other transition is refused.
+          //
+          // Because the only permitted target is 'userExplicit', this also blocks
+          // the dangerous direction: a signal the user stated explicitly can
+          // never be downgraded back to an inferred source, so later behavioural
+          // inference cannot quietly overwrite what the user actually told us.
+          && (
+               request.resource.data.source == resource.data.source
+               || (
+                    request.resource.data.source == 'userExplicit'
+                    && request.resource.data.userCorrected == true
+                  )
+             )
+          // Lineage must survive for anything the system inferred. A correction
+          // the user typed has no originating event, so an empty list is valid
+          // there and only there.
+          && request.resource.data.sourceEventIds is list
+          && (
+               request.resource.data.source == 'userExplicit'
+               || request.resource.data.sourceEventIds.size() > 0
+             );
+
+        allow delete: if isOwner(userId);
+      }
+
+      // Experience graph. Nodes and edges are derived and fully rebuildable, so
+      // they are writable — but weights must stay in range and node identity is
+      // fixed, otherwise a rebuild would disagree with what is stored.
+      match /experienceGraphNodes/{nodeId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == userId
+          && request.resource.data.type is string
+          && request.resource.data.key is string
+          // Node weight is an accumulating observation COUNT, not a score, so it
+          // is unbounded above — only the floor is meaningful.
+          && request.resource.data.weight is number
+          && request.resource.data.weight >= 0;
+        allow update: if isOwner(userId)
+          && request.resource.data.weight is number
+          && request.resource.data.weight >= 0
+          && unchanged('type')
+          && unchanged('key')
+          && unchanged('userId');
+        allow delete: if isOwner(userId);
+      }
+
+      match /experienceGraphEdges/{edgeId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == userId
+          && request.resource.data.fromNodeId is string
+          && request.resource.data.toNodeId is string
+          && request.resource.data.type is string
+          // Edge weight also accumulates across observations; it is the
+          // `confidence` field that is normalized to [0,1].
+          && request.resource.data.weight is number
+          && isFraction(request.resource.data.confidence);
+        allow update: if isOwner(userId)
+          && request.resource.data.weight is number
+          && isFraction(request.resource.data.confidence)
+          && unchanged('fromNodeId')
+          && unchanged('toNodeId')
+          && unchanged('type')
+          && unchanged('userId');
+        allow delete: if isOwner(userId);
+      }
+
+      // The user experience profile. One document; version is monotonic so a
+      // stale client cannot overwrite a newer profile with older conclusions.
+      match /experienceProfile/{profileId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == userId
+          && request.resource.data.profileVersion is int
+          && isFraction(request.resource.data.overallConfidence);
+        allow update: if isOwner(userId)
+          && request.resource.data.profileVersion is int
+          && request.resource.data.profileVersion >= resource.data.profileVersion
+          && isFraction(request.resource.data.overallConfidence)
+          && unchanged('userId');
+        allow delete: if isOwner(userId);
+      }
+
+      // Derived experience memories — the statements fed into AI prompts.
+      match /experienceMemories/{memoryRecordId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == userId
+          && request.resource.data.type is string
+          && request.resource.data.statement is string
+          && request.resource.data.statement.size() <= 240
+          && isFraction(request.resource.data.confidence)
+          && isFraction(request.resource.data.freshness)
+          && request.resource.data.systemGenerated is bool;
+        allow update: if isOwner(userId)
+          && isFraction(request.resource.data.confidence)
+          && isFraction(request.resource.data.freshness)
+          && request.resource.data.statement is string
+          && request.resource.data.statement.size() <= 240
+          && unchanged('userId')
+          // A user-authored record can never become a system fact, and a system
+          // record can never be quietly re-attributed to the user.
+          && unchanged('systemGenerated');
+        allow delete: if isOwner(userId);
+      }
+
+      // Idempotent background job queue.
+      match /experienceJobs/{jobId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == userId
+          && request.resource.data.type is string
+          && request.resource.data.status is string
+          && request.resource.data.attempts is int;
+        allow update: if isOwner(userId)
+          && unchanged('userId')
+          && unchanged('type')
+          && request.resource.data.attempts is int
+          // Attempts only ever increase; a client cannot reset its own retry budget.
+          && request.resource.data.attempts >= resource.data.attempts;
+        allow delete: if isOwner(userId);
+      }
+
+      // Structured reflection insights.
+      //
+      // NOTE ON PRIVACY: the raw reflection text lives in /reflections and
+      // /memories, which only the owner can read. These insight documents hold
+      // only measurements (mood enum, length bucket, descriptor counts) — see
+      // reflectionInsightService.ts, which is written so that the raw text is
+      // provably never copied into one. Rules cannot verify that; the service
+      // structure is the guarantee, and this rule bounds the damage by keeping
+      // the collection owner-only regardless.
+      match /reflectionInsights/{insightId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == userId
+          // No raw text field is permitted in this collection, at all.
+          && !request.resource.data.keys().hasAny(['reflectionText', 'text', 'body', 'content']);
+        allow update: if isOwner(userId)
+          && unchanged('userId')
+          && !request.resource.data.keys().hasAny(['reflectionText', 'text', 'body', 'content']);
+        allow delete: if isOwner(userId);
+      }
+
+      // Personalization settings — the user's own controls (kill switch, novelty
+      // preference, explicit preferences). These live at
+      // `users/{userId}/settings/personalization` and are already covered by the
+      // /settings/{settingId} rule above. That is deliberate: any restriction
+      // here would be a restriction on the user's ability to turn the system OFF,
+      // which is the one write that must always succeed.
+
+      // ═════════════════════════════════════════════════════════
+      // Phase 12 — Memory Journal 2.0
+      // ═════════════════════════════════════════════════════════
+
+      // Media metadata. The bytes live in Storage (see storage.rules); this holds
+      // the pointer, dimensions, and upload state.
+      match /memoryMedia/{mediaId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == userId
+          && request.resource.data.memoryId is string
+          && request.resource.data.storagePath is string
+          // A media row may only ever point inside the owner's own storage tree.
+          && request.resource.data.storagePath.matches('^users/' + userId + '/memories/.*');
+        allow update: if isOwner(userId)
+          && unchanged('userId')
+          && unchanged('memoryId')
+          && unchanged('storagePath');
+        allow delete: if isOwner(userId);
+      }
+
+      match /memoryCollections/{collectionId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == userId
+          && request.resource.data.name is string
+          && request.resource.data.name.size() <= 80;
+        allow update: if isOwner(userId)
+          && unchanged('userId')
+          && request.resource.data.name is string
+          && request.resource.data.name.size() <= 80
+          // A hand-curated collection cannot be relabelled as auto-generated
+          // (or the reverse) — the badge the user sees must stay truthful.
+          && unchanged('isSmart');
+        allow delete: if isOwner(userId);
+      }
+
+      // Experience recaps (weekly/monthly/yearly).
+      match /experienceRecaps/{recapId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == userId
+          && request.resource.data.periodType in ['weekly', 'monthly', 'yearly']
+          && request.resource.data.status in ['generating', 'ready', 'failed', 'outdated'];
+        allow update: if isOwner(userId)
+          && unchanged('userId')
+          && unchanged('periodType')
+          && unchanged('periodStart')
+          && request.resource.data.status in ['generating', 'ready', 'failed', 'outdated'];
+        allow delete: if isOwner(userId);
+      }
+
+      // The owner's index of share tokens they have issued, so they can revoke.
+      // The PUBLIC lookup document is /shareLinks/{token} below.
+      match /shareTokens/{tokenId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.userId == userId
+          && request.resource.data.token is string
+          && request.resource.data.token.size() >= 22;
+        allow update: if isOwner(userId)
+          && unchanged('userId')
+          && unchanged('token');
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 2. Global Content (read-only for users)
+    // ═══════════════════════════════════════════════════════════
+    match /places/{placeId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    match /experiences/{experienceId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /quests/{questId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 3. Public share links (Phase 12)
+    // ═══════════════════════════════════════════════════════════
+    //
+    // Readable WITHOUT auth — that is the point of a share link. Two safety
+    // properties are structural rather than rule-enforced, and both belong to the
+    // writing client (see ShareExperienceCardService):
+    //
+    //   1. The document ID is a high-entropy random token. It is NOT the userId,
+    //      NOT a Firestore document ID, and NOT a storage path, so possessing a
+    //      link reveals nothing about the account or its other content.
+    //   2. The document contains only the rendered card payload. No userId, no
+    //      source memory ID, no storage path — enforced by the field denylist
+    //      below, which rejects the write outright if any of them appear.
+    //
+    // Expiry is checked on read so a lapsed link stops resolving even if nobody
+    // has run a cleanup job. Revocation is a delete or a `revoked: true` update
+    // by the owner.
+    match /shareLinks/{token} {
+      allow read: if resource.data.revoked != true
+        && (!('expiresAt' in resource.data) || request.time < resource.data.expiresAt);
+
+      allow create: if isAuthenticated()
+        && request.resource.data.ownerUid == request.auth.uid
+        && token.size() >= 22
+        // The payload must not carry any internal identifier.
+        && !request.resource.data.keys().hasAny([
+             'userId', 'uid', 'memoryId', 'recapId', 'storagePath', 'email', 'handle'
+           ]);
+
+      // Only the owner may revoke or amend, and ownership itself is frozen.
+      allow update: if isAuthenticated()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && !request.resource.data.keys().hasAny([
+             'userId', 'uid', 'memoryId', 'recapId', 'storagePath', 'email', 'handle'
+           ]);
+
+      allow delete: if isAuthenticated() && resource.data.ownerUid == request.auth.uid;
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    // 4. Social & Safety Collections (Phase 9 core, Phase 14 hardened)
+    // ═══════════════════════════════════════════════════════════
+    //
+    // Authorization for the whole social layer is enforced HERE — the client
+    // writes directly via the Web SDK and there is no server in the loop. The
+    // load-bearing invariants:
+    //   - Deterministic ids (`userA__userB`, `blocker__blocked`) let one doc's
+    //     rule reason about another via exists(), which is how block precedence
+    //     and canonical friendship identity are enforced without a query.
+    //   - Blocking takes precedence over friending, inviting, and joining.
+    //   - Group membership is invite-then-accept: an outsider has NO self-join
+    //     path; a MEMBER can never mutate their own role.
+    //   - Safety records (blocks, shared experiences, reports) are immutable or
+    //     append-only so history cannot be rewritten.
+
+    match /friendships/{friendshipId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userA == request.auth.uid || resource.data.userB == request.auth.uid
+      );
+      // A request is created as `pending`, by one of the two parties, with the
+      // canonical sorted id, and ONLY if neither party has blocked the other.
+      // Binding the id to `userA + '__' + userB` (with userA < userB) guarantees a
+      // single friendship doc per pair, which is what makes the exists() block
+      // checks — here and elsewhere — reliable.
+      allow create: if isAuthenticated()
+        && request.resource.data.requestedBy == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.userA is string
+        && request.resource.data.userB is string
+        && request.resource.data.userA < request.resource.data.userB
+        && friendshipId == request.resource.data.userA + '__' + request.resource.data.userB
+        && (request.auth.uid == request.resource.data.userA || request.auth.uid == request.resource.data.userB)
+        && noBlockBetween(request.resource.data.userA, request.resource.data.userB);
+      // Either party may update status, but the pair and the requester are frozen,
+      // AND the original requester may never move the request to `accepted` — only
+      // the recipient can accept (the requester can still decline / remove / block).
+      allow update: if isAuthenticated()
+        && (resource.data.userA == request.auth.uid || resource.data.userB == request.auth.uid)
+        && unchanged('userA')
+        && unchanged('userB')
+        && unchanged('requestedBy')
+        && (
+          request.resource.data.status != 'accepted'
+          || resource.data.requestedBy != request.auth.uid
+        );
+      allow delete: if isAuthenticated() && (
+        resource.data.userA == request.auth.uid || resource.data.userB == request.auth.uid
+      );
+    }
+
+    // Handle → uid claim. Create-only ⇒ a claimed handle is UNSTEALABLE (first
+    // writer wins); update is forbidden so nobody can hijack an existing handle.
+    match /handles/{handleLower} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.handleLower == handleLower
+        && handleLower.matches('^[a-z0-9_]{3,30}$');
+      allow update: if false;
+      allow delete: if isAuthenticated() && resource.data.uid == request.auth.uid;
+    }
+
+    match /questInvites/{token} {
+      // Readable by any signed-in user: an invite is discovered by its unguessable
+      // token (the doc id), like a share link, and carries no private profile data.
+      allow read: if isAuthenticated();
+      // The doc id IS the token: bind them, require enough entropy (>= 22 chars),
+      // and force the initial status to `active`.
+      allow create: if isAuthenticated()
+        && request.resource.data.creatorId == request.auth.uid
+        && request.resource.data.inviteToken == token
+        && token.size() >= 22
+        && request.resource.data.status == 'active';
+      // Only the creator may amend, and creator/token can never be reassigned.
+      allow update: if isAuthenticated()
+        && resource.data.creatorId == request.auth.uid
+        && unchanged('creatorId')
+        && unchanged('inviteToken');
+      allow delete: if isAuthenticated() && resource.data.creatorId == request.auth.uid;
+    }
+
+    match /groupQuestSessions/{sessionId} {
+      // Creator or any member (authoritative: a members/{uid} doc) may read.
+      allow read: if isAuthenticated() && (
+        request.auth.uid == resource.data.creatorId
+        || isSessionMember(sessionId, request.auth.uid)
+      );
+      allow create: if isAuthenticated()
+        && request.resource.data.creatorId == request.auth.uid
+        && request.resource.data.state == 'waiting';
+      // The creator or an OWNER/ADMIN may drive session state; creator is frozen.
+      allow update: if isAuthenticated()
+        && (
+          request.auth.uid == resource.data.creatorId
+          || isSessionManager(sessionId, request.auth.uid)
+        )
+        && unchanged('creatorId');
+      allow delete: if isAuthenticated() && resource.data.creatorId == request.auth.uid;
+
+      // Authoritative membership — invite-then-accept.
+      match /members/{memberUid} {
+        allow read: if isAuthenticated() && (
+          request.auth.uid == sessionCreatorId(sessionId)
+          || isSessionMember(sessionId, request.auth.uid)
+        );
+        // Two create paths, both OWNER/ADMIN-gated — NEVER a self-join:
+        //   (a) the creator bootstraps their own OWNER row;
+        //   (b) an OWNER/ADMIN invites a third party as an `invited` MEMBER, and
+        //       only if neither party has blocked the other.
+        allow create: if isAuthenticated() && (
+          (
+            memberUid == request.auth.uid
+            && request.resource.data.uid == request.auth.uid
+            && request.resource.data.role == 'OWNER'
+            && sessionCreatorId(sessionId) == request.auth.uid
+          )
+          || (
+            isSessionManager(sessionId, request.auth.uid)
+            && request.resource.data.uid == memberUid
+            && request.resource.data.role == 'MEMBER'
+            && request.resource.data.status == 'invited'
+            && noBlockBetween(request.auth.uid, memberUid)
+          )
+        );
+        // Two update paths:
+        //   (a) the invitee accepts/declines/leaves their OWN row — role FROZEN;
+        //   (b) an OWNER/ADMIN manages another member's role, never above ADMIN.
+        allow update: if isAuthenticated() && (
+          (
+            memberUid == request.auth.uid
+            && unchanged('uid')
+            && unchanged('role')
+            && request.resource.data.status in ['active', 'declined', 'left']
+          )
+          || (
+            isSessionManager(sessionId, request.auth.uid)
+            && unchanged('uid')
+            && request.resource.data.role in ['ADMIN', 'MEMBER']
+          )
+        );
+        // A member may remove themselves; an OWNER/ADMIN may remove others.
+        allow delete: if isAuthenticated() && (
+          memberUid == request.auth.uid
+          || isSessionManager(sessionId, request.auth.uid)
+        );
+      }
+    }
+
+    match /sharedExperiences/{sharedExpId} {
+      allow read: if isAuthenticated() && (request.auth.uid in resource.data.participantIds);
+      // The creator must be one of the participants — a caller cannot fabricate a
+      // shared experience they are not part of. Size-capped and then immutable.
+      allow create: if isAuthenticated()
+        && request.resource.data.creatorId == request.auth.uid
+        && request.resource.data.participantIds is list
+        && (request.auth.uid in request.resource.data.participantIds)
+        && request.resource.data.participantIds.size() <= 8;
+      allow update, delete: if false;
+    }
+
+    match /userBlocks/{blockId} {
+      // A user can only read blocks THEY created (you cannot enumerate who blocked
+      // you); the reverse direction is enforced by the exists() checks elsewhere.
+      allow read: if isAuthenticated() && resource.data.blockerId == request.auth.uid;
+      // Bind the id to `blocker__blocked`, forbid self-block. Immutable (unblock is
+      // a delete) so a block cannot be silently rewritten to point elsewhere.
+      allow create: if isAuthenticated()
+        && request.resource.data.blockerId == request.auth.uid
+        && blockId == request.auth.uid + '__' + request.resource.data.blockedId
+        && request.resource.data.blockedId != request.auth.uid;
+      allow update: if false;
+      allow delete: if isAuthenticated() && resource.data.blockerId == request.auth.uid;
+    }
+
+    match /reports/{reportId} {
+      allow create: if isAuthenticated() && request.resource.data.reporterId == request.auth.uid;
+      allow read, update, delete: if false; // Admins only via backend
+    }
+  }
+}

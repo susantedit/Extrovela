@@ -1,0 +1,29 @@
+{
+  "appId": "app.extrovela.mobile",
+  "appName": "EXTROVELA",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "backgroundColor": "#08090D",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "launchAutoHide": true,
+      "backgroundColor": "#08090D",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#08090D",
+      "overlaysWebView": false
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon_config_sample",
+      "iconColor": "#84CC16",
+      "sound": "beep.wav"
+    }
+  }
+}

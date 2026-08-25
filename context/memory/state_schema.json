@@ -1,0 +1,20 @@
+{
+  "memoryRecord": {
+    "id": "string",
+    "questId": "string",
+    "questTitle": "string",
+    "completedAt": "ISO Timestamp",
+    "moodRating": "number (1 to 5)",
+    "reflectionText": "string",
+    "photoUrl": "string",
+    "voiceNoteDuration": "number in seconds",
+    "location": {
+      "city": "Kathmandu | Pokhara | Tokyo | London",
+      "placeName": "string",
+      "lat": "number",
+      "lng": "number"
+    },
+    "isFirstTimeExperience": "boolean",
+    "tags": "array of strings"
+  }
+}
