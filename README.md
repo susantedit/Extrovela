@@ -9,7 +9,8 @@
     <a href="#table-of-contents">Table of Contents</a> •
     <a href="#system-architecture">Architecture</a> •
     <a href="#core-experience-loop">Core Loop</a> •
-    <a href="#feature-encyclopedia">Feature Map</a> •
+    <a href="#architectural-trade-offs-and-rationale">Trade-Offs & Rationale</a> •
+    <a href="#mathematical-foundations-and-algorithmic-architecture">Mathematical Foundations</a> •
     <a href="#api-reference">API Reference</a> •
     <a href="#database-architecture">Database</a> •
     <a href="#developer-guide">Developer Guide</a> •
@@ -26,28 +27,30 @@ TABLE OF CONTENTS
 3. THE EXTROVELA CORE EXPERIENCE LOOP
 4. SYSTEM ARCHITECTURE AND HIGH-LEVEL DESIGN
 5. INTERACTIVE FLOWCHARTS AND STATE DIAGRAMS
-6. REPOSITORY FILE CATALOG AND DIRECTORY TREE
-7. FEATURE ENCYCLOPEDIA AND CAPABILITIES
-8. ASTRONOMICAL SOLAR AND CELESTIAL PHYSICS ENGINE
-9. WEATHER-ADAPTIVE CONTEXTUAL ENGINE
-10. PROCEDURAL AMBIENT AUDIO SYNTHESIS ENGINE
-11. HARDWARE MEDIA CAPTURE AND 9:16 CANVAS STORY EXPORTER
-12. GEOLOCATION, REVERSE GEOCODING, AND PRIVACY ENGINE
-13. LEAFLET LIFE MAP AND DISCOVERY GRID SYSTEM
-14. ANTI-REPETITION AND CATEGORY ENTROPY ALGORITHM
-15. CO-QUESTS, CRYPTOGRAPHIC INVITES, AND SOCIAL LOOPS
-16. EMIL KOWALSKI AND APPLE SPRING MOTION DESIGN SYSTEM
-17. GLASSMORPHIC ALERT AND TOAST SYSTEM
-18. COMPLETE REST API SPECIFICATION
-19. MONGODB AND FIRESTORE DATABASE MODELS
-20. SECURITY RULES AND PERMISSION MATRICES
-21. OFFLINE-FIRST SYNCHRONIZATION PROTOCOL
-22. DEVELOPER ONBOARDING AND ENVIRONMENT CONFIGURATION
-23. CAPACITOR NATIVE MOBILE COMPILATION GUIDE
-24. COMPLETE FOURTEEN PHASE ENGINEERING HISTORY
-25. PRE-PUSH DEFENSIVE SECURITY AUDIT REPORT
-26. DOCUMENTATION SITEMAP AND REPOSITORY INDEX
-27. LICENSE AND CREDITS
+6. ARCHITECTURAL DECISIONS, TRADE-OFFS, AND RATIONALE (WHY, HOW, WHEN, WHY NOT)
+7. REPOSITORY FILE CATALOG AND DIRECTORY TREE
+8. FEATURE ENCYCLOPEDIA AND CAPABILITIES
+9. MATHEMATICAL FOUNDATIONS AND ALGORITHMIC ARCHITECTURE (WHAT, HOW, WHEN, WHY)
+10. ASTRONOMICAL SOLAR AND CELESTIAL PHYSICS ENGINE
+11. WEATHER-ADAPTIVE CONTEXTUAL ENGINE
+12. PROCEDURAL AMBIENT AUDIO SYNTHESIS ENGINE
+13. HARDWARE MEDIA CAPTURE AND 9:16 CANVAS STORY EXPORTER
+14. GEOLOCATION, REVERSE GEOCODING, AND PRIVACY ENGINE
+15. LEAFLET LIFE MAP AND DISCOVERY GRID SYSTEM
+16. ANTI-REPETITION AND CATEGORY ENTROPY ALGORITHM
+17. CO-QUESTS, CRYPTOGRAPHIC INVITES, AND SOCIAL LOOPS
+18. EMIL KOWALSKI AND APPLE SPRING MOTION DESIGN SYSTEM
+19. GLASSMORPHIC ALERT AND TOAST SYSTEM
+20. COMPLETE REST API SPECIFICATION
+21. MONGODB AND FIRESTORE DATABASE MODELS
+22. SECURITY RULES AND PERMISSION MATRICES
+23. OFFLINE-FIRST SYNCHRONIZATION PROTOCOL
+24. DEVELOPER ONBOARDING AND ENVIRONMENT CONFIGURATION
+25. CAPACITOR NATIVE MOBILE COMPILATION GUIDE
+26. COMPLETE FOURTEEN PHASE ENGINEERING HISTORY
+27. PRE-PUSH DEFENSIVE SECURITY AUDIT REPORT
+28. DOCUMENTATION SITEMAP AND REPOSITORY INDEX
+29. LICENSE AND CREDITS
 
 ================================================================================
 1. EXECUTIVE SUMMARY AND PRODUCT VISION
@@ -231,7 +234,74 @@ sequenceDiagram
 ```
 
 ================================================================================
-6. REPOSITORY FILE CATALOG AND DIRECTORY TREE
+6. ARCHITECTURAL DECISIONS, TRADE-OFFS, AND RATIONALE
+================================================================================
+
+This section details the critical technical decisions across the EXTROVELA platform, answering WHY each technology was chosen, HOW it works, WHEN it is triggered, WHY NOT the common alternatives, and WHAT TO DO INSTEAD during edge case failures.
+
+--------------------------------------------------------------------------------
+DECISION 1: PURE VANILLA CSS TOKENS INSTEAD OF TAILWIND CSS
+--------------------------------------------------------------------------------
+• WHAT: A centralized CSS Custom Properties design system in `src/styles/index.css` defining spatial scales, colors, glassmorphism filters, and hardware-accelerated spring curves.
+• HOW: Native CSS variables (`--color-surface`, `--color-accent`, `--ease-spring`) compiled directly by browser rendering engines without build-step overhead.
+• WHEN: Applied universally across all screens, modals, badges, cards, and typography.
+• WHY CHOSEN: Guarantees 100% granular control over Emil Kowalski spring easing physics, zero runtime overhead, instant style hot-reloading, and consistent dark-mode tokens without generating massive utility class bloat.
+• WHY NOT TAILWIND CSS: Tailwind creates class string clutter (`className="flex flex-col items-center justify-between p-4 bg-zinc-900/80 backdrop-blur border..."`), complicates custom cubic-bezier spring curves with arbitrary values, and couples component structure tightly to framework-specific utility conventions.
+• WHAT TO DO INSTEAD: If scoped component styles are required in future extensions, CSS Modules can be used alongside the existing global token hierarchy.
+
+--------------------------------------------------------------------------------
+DECISION 2: CAPACITOR NATIVE BRIDGE INSTEAD OF REACT NATIVE OR FLUTTER
+--------------------------------------------------------------------------------
+• WHAT: Capacitor 6.0 wrapping a unified Vite + React 18 single-page application into native iOS Xcode and Android Gradle binaries.
+• HOW: Exposes hardware primitives (Camera, GPS Geolocation, Tactile Haptics, Local Notifications) through asynchronous JavaScript-to-native message bridges.
+• WHEN: Invoked whenever media capture, haptics, geolocation, or push notifications are executed.
+• WHY CHOSEN: Allows 100% code reuse across Web, iOS, and Android. Eliminates double-codebase maintenance, enables instant web previews during development, and provides access to standard Web APIs (Web Audio API, Canvas 2D) that are cumbersome in React Native.
+• WHY NOT REACT NATIVE: React Native requires bridge-specific native UI components, complicates Canvas 2D rendering for 9:16 story cards, and creates ongoing maintenance overhead with bridge deprecations.
+• WHY NOT FLUTTER: Flutter requires switching languages from TypeScript to Dart, duplicates business logic, and lacks seamless Web Audio DSP synthesizer support.
+• WHAT TO DO INSTEAD: If a device runs in a standard mobile browser where Capacitor native plugins are absent, all hardware calls fall back gracefully to standard Web APIs (`navigator.geolocation`, `MediaRecorder`, `navigator.share`).
+
+--------------------------------------------------------------------------------
+DECISION 3: OPENSTREETMAP NOMINATIM INSTEAD OF GOOGLE MAPS GEOCODING API
+--------------------------------------------------------------------------------
+• WHAT: Free, open-access reverse geocoding resolving GPS latitude/longitude into human-readable city and municipal district names.
+• HOW: HTTP GET request with an English language header dispatched to `https://nominatim.openstreetmap.org/reverse?format=json&lat={lat}&lon={lng}`.
+• WHEN: Triggered once on initial app mount and whenever location permissions are granted.
+• WHY CHOSEN: Eliminates expensive per-request API billing, requires zero API key leakage in mobile bundles, and provides robust global coverage across thousands of cities worldwide.
+• WHY NOT GOOGLE MAPS GEOCODING API: Google Maps Geocoding costs $5.00 per 1,000 requests, requires mandatory credit card billing, enforces restrictive quota caps, and exposes private billing keys to client tampering.
+• WHAT TO DO INSTEAD: If Nominatim encounters network timeout (e.g. strict rate limit), the app falls back to local timezone offset coordinate estimation or cached municipal profiles.
+
+--------------------------------------------------------------------------------
+DECISION 4: WEB AUDIO PROCEDURAL SYNTHESIS INSTEAD OF HOSTED MP3 AUDIO FILES
+--------------------------------------------------------------------------------
+• WHAT: Real-time mathematical acoustic sound generation for continuous nature ambiance (Summer Rain, Ocean Shore, Forest Birds, Highland Wind).
+• HOW: Web Audio API `AudioContext` generating white and pink noise buffers filtered through 2nd-order recursive Biquad filters and modulated by low-frequency oscillators.
+• WHEN: Activated on demand when an explorer opens the Soundscape Drawer during a quest.
+• WHY CHOSEN: Zero network bandwidth consumption (0 MB downloaded), instant playback with zero buffering latency, infinite non-repeating acoustic variation, and complete offline capability.
+• WHY NOT HOSTED MP3 FILES: MP3 audio loops require downloading 15–50 MB of audio files, introduce audible looping seams, waste mobile cellular data, and fail entirely in offline environments.
+• WHAT TO DO INSTEAD: If the browser's Web Audio API is muted or disabled by power-saving modes, the app renders visual pulsing ambient aura animations to provide calming feedback.
+
+--------------------------------------------------------------------------------
+DECISION 5: LOCAL-FIRST SYNCHRONIZATION QUEUE INSTEAD OF ALWAYS-ONLINE REST
+--------------------------------------------------------------------------------
+• WHAT: Resilient offline storage layer writing memories and reflections to local `localStorage` and `IndexedDB` immediately, followed by asynchronous background cloud synchronization.
+• HOW: Memory records are saved with client-generated UUIDs, committed to local state instantly, and appended to an offline dispatch queue with exponential retry backoff.
+• WHEN: Triggered on every quest completion, photo snap, and reflection submission.
+• WHY CHOSEN: Real-world experiences often occur in areas with poor cellular reception (hilltops, basements, remote parks, underground transit). Explorers must never lose a memory or photo due to spotty network connectivity.
+• WHY NOT ALWAYS-ONLINE REST: Standard REST architectures block the user interface with loading spinners, fail abruptly on HTTP timeout, and discard memories if the network drops before completion.
+• WHAT TO DO INSTEAD: When the client detects an active internet connection via `window.addEventListener('online')`, the queue drains automatically to `/api/memories/sync`.
+
+--------------------------------------------------------------------------------
+DECISION 6: CRYPTOGRAPHIC HMAC-SHA256 INVITES INSTEAD OF CENTRALIZED SESSIONS
+--------------------------------------------------------------------------------
+• WHAT: Self-contained, tamper-proof co-quest invite URLs containing cryptographically signed payloads.
+• HOW: A Base64Url header and payload signed with server-side HMAC-SHA256. The recipient's client validates the signature and resolves quest parameters directly from the token.
+• WHEN: Generated when an explorer taps "Invite Companion" on any quest card.
+• WHY CHOSEN: Allows instant peer-to-peer sharing via WhatsApp, SMS, or Telegram without requiring database writes prior to invitation, and permits non-registered recipients to preview the quest immediately.
+• WHY NOT CENTRAL DATABASE INVITE ROWS: Database-dependent invite tables accumulate stale orphaned rows from unaccepted links, create unnecessary database write loads, and require recipient authentication before viewing.
+• WHAT TO DO INSTEAD: If a token expires after its 24-hour validity window, the recipient is presented with a fresh candidate quest from the same category with an option to request a new invite.
+
+================================================================================
+7. REPOSITORY FILE CATALOG AND DIRECTORY TREE
 ================================================================================
 
 ```
@@ -313,7 +383,7 @@ Extrovela/
 ```
 
 ================================================================================
-7. FEATURE ENCYCLOPEDIA AND CAPABILITIES
+8. FEATURE ENCYCLOPEDIA AND CAPABILITIES
 ================================================================================
 
 1. TODAY'S CURATED FEATURED QUEST
@@ -356,7 +426,7 @@ Users can invite friends or meet companions by sharing a secure HMAC-SHA256 sign
 Zero native browser alert popups. All confirmations, warnings, and toasts render through an animated, haptic-enabled custom dialog system.
 
 ================================================================================
-8. MATHEMATICAL FOUNDATIONS & ALGORITHMIC ARCHITECTURE
+9. MATHEMATICAL FOUNDATIONS & ALGORITHMIC ARCHITECTURE
 ================================================================================
 
 EXTROVELA is built upon seven rigorous mathematical and algorithmic frameworks that power its astronomical timing, recommendation intelligence, acoustic synthesis, geospatial discovery, motion physics, and cryptography. Below is the detailed breakdown of the WHAT, HOW, WHEN, and WHY for each system.
@@ -608,7 +678,15 @@ WHY:
 Provides a transparent, game-like exploration progress metric that incentivizes users to visit diverse neighborhoods across their city rather than repeating the same block.
 
 ================================================================================
-9. WEATHER-ADAPTIVE CONTEXTUAL ENGINE
+10. ASTRONOMICAL SOLAR AND CELESTIAL PHYSICS ENGINE
+================================================================================
+
+EXTROVELA implements exact astronomical solar positioning algorithms in `src/lib/ai-quest-engine.ts` to schedule golden-hour experiences with zero API overhead.
+
+If the current system clock falls within 45 minutes prior to calculated sunset, the quest engine dynamically promotes sunset viewpoint quests across the Home Screen.
+
+================================================================================
+11. WEATHER-ADAPTIVE CONTEXTUAL ENGINE
 ================================================================================
 
 The application interfaces with the open-access Open-Meteo API (`https://api.open-meteo.com/v1/forecast`) via server-mediated proxies to query real-time meteorological variables:
@@ -626,7 +704,7 @@ The application interfaces with the open-access Open-Meteo API (`https://api.ope
 • Cloud Cover 30%–70%: Triggers the 15-Minute Cloud Watching meditation quest.
 
 ================================================================================
-10. PROCEDURAL AMBIENT AUDIO SYNTHESIS ENGINE
+12. PROCEDURAL AMBIENT AUDIO SYNTHESIS ENGINE
 ================================================================================
 
 In `src/components/SoundscapeDrawer.tsx`, EXTROVELA synthesizes generative soundscapes directly in the browser using the Web Audio API without loading external MP3 audio files:
@@ -645,7 +723,7 @@ In `src/components/SoundscapeDrawer.tsx`, EXTROVELA synthesizes generative sound
 • Envelope: Rapid linear attack (8ms) followed by exponential decay (120ms) triggered at Poisson-distributed intervals.
 
 ================================================================================
-11. HARDWARE MEDIA CAPTURE AND 9:16 CANVAS STORY EXPORTER
+13. HARDWARE MEDIA CAPTURE AND 9:16 CANVAS STORY EXPORTER
 ================================================================================
 
 1. NATIVE CAMERA BRIDGE
@@ -664,7 +742,7 @@ In `src/components/ShareStoryModal.tsx`, social story cards are generated in-mem
 6. The canvas is exported as a PNG Blob and shared via `navigator.share({ files })`.
 
 ================================================================================
-12. GEOLOCATION, REVERSE GEOCODING, AND PRIVACY ENGINE
+14. GEOLOCATION, REVERSE GEOCODING, AND PRIVACY ENGINE
 ================================================================================
 
 1. GPS RESOLUTION LIFECYCLE
@@ -683,7 +761,7 @@ Exact coordinates are strictly protected under EXTROVELA privacy policies:
 • Outbound requests to AI generation gateways receive only the broad city name and general district (e.g., "Tokyo Central District"). Exact lat/long pairs are stripped.
 
 ================================================================================
-13. LEAFLET LIFE MAP AND DISCOVERY GRID SYSTEM
+15. LEAFLET LIFE MAP AND DISCOVERY GRID SYSTEM
 ================================================================================
 
 The interactive world map in `src/components/screens/MapScreen.tsx` utilizes Leaflet with custom dark-themed CartoDB tile layers (`https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png`).
@@ -695,33 +773,25 @@ Every completed experience with geographical coordinates renders as an animated 
 Unvisited landmarks and suggested starting points appear as pulsing hollow rings, inviting the explorer to walk into proximity to unlock the location.
 
 ================================================================================
-14. ANTI-REPETITION AND CATEGORY ENTROPY ALGORITHM
+16. ANTI-REPETITION AND CATEGORY ENTROPY ALGORITHM
 ================================================================================
 
-To avoid behavioral boredom, `src/services/intelligence/diversityEngine.ts` implements Shannon Entropy scoring over the user's previous $N$ completed memories:
-
-$$\text{Category Probability } p_c = \frac{\text{Count of Quests in Category } c}{N}$$
-
-$$\text{Entropy } H = -\sum_{c \in C} p_c \log_2(p_c)$$
+To avoid behavioral boredom, `src/services/intelligence/diversityEngine.ts` implements Shannon Entropy scoring over the user's previous $N$ completed memories.
 
 If the entropy score $H$ falls below 1.25 (indicating severe concentration in one category), the quest ranking engine applies a dynamic penalty factor to the dominant category and boosts opposing categories by 2.5x.
 
 ================================================================================
-15. CO-QUESTS, CRYPTOGRAPHIC INVITES, AND SOCIAL LOOPS
+17. CO-QUESTS, CRYPTOGRAPHIC INVITES, AND SOCIAL LOOPS
 ================================================================================
 
 1. TOKEN GENERATION (HMAC-SHA256)
-When a user taps "Invite Companion", the backend gateway creates a 24-hour cryptographic invite token:
-
-$$\text{Token} = \text{Base64Url}(\text{JSON Payload}) + "." + \text{HMAC-SHA256}(\text{Payload}, \text{Secret})$$
-
-The payload contains `inviteId`, `hostUserId`, `questId`, and `expiryTimestamp`.
+When a user taps "Invite Companion", the backend gateway creates a 24-hour cryptographic invite token containing `inviteId`, `hostUserId`, `questId`, and `expiryTimestamp`.
 
 2. PEER SYNCHRONIZATION
 When a recipient opens the link, the token signature is verified. The companion joins the group session, and both users receive live completion confirmations upon verification.
 
 ================================================================================
-16. EMIL KOWALSKI AND APPLE SPRING MOTION DESIGN SYSTEM
+18. EMIL KOWALSKI AND APPLE SPRING MOTION DESIGN SYSTEM
 ================================================================================
 
 EXTROVELA's motion physics in `src/styles/index.css` adhere to modern design engineering standards:
@@ -738,7 +808,7 @@ All animations transform strictly via `transform` and `opacity` properties, util
 All interactive cards and buttons compress subtly to `scale(0.97)` on `:active` touch, providing immediate physical feedback.
 
 ================================================================================
-17. GLASSMORPHIC ALERT AND TOAST SYSTEM
+19. GLASSMORPHIC ALERT AND TOAST SYSTEM
 ================================================================================
 
 All alert and confirmation interactions are managed through `src/context/CustomAlertContext.tsx`:
@@ -747,7 +817,7 @@ All alert and confirmation interactions are managed through `src/context/CustomA
 • `showToast({ message, type })`: Displays a transient bottom-anchored notification with auto-dismissal after 3 seconds.
 
 ================================================================================
-18. COMPLETE REST API SPECIFICATION
+20. COMPLETE REST API SPECIFICATION
 ================================================================================
 
 ### QUEST ENDPOINTS
@@ -826,7 +896,7 @@ Response (200 OK):
 ```
 
 ================================================================================
-19. MONGODB AND FIRESTORE DATABASE MODELS
+21. MONGODB AND FIRESTORE DATABASE MODELS
 ================================================================================
 
 ### MONGODB MEMORY SCHEMA (`server/models/Memory.js`)
@@ -856,7 +926,7 @@ const MemorySchema = new mongoose.Schema({
 ```
 
 ================================================================================
-20. SECURITY RULES AND PERMISSION MATRICES
+22. SECURITY RULES AND PERMISSION MATRICES
 ================================================================================
 
 1. FIRESTORE SECURITY RULES (`firestore.rules`)
@@ -869,7 +939,7 @@ const MemorySchema = new mongoose.Schema({
 • Audio Uploads: Path restricted to `/users/{userId}/audio/{audioId}`. Maximum file size 5MB. MIME type must match `audio/*`.
 
 ================================================================================
-21. OFFLINE-FIRST SYNCHRONIZATION PROTOCOL
+23. OFFLINE-FIRST SYNCHRONIZATION PROTOCOL
 ================================================================================
 
 1. PERSISTENCE ENGINE
@@ -879,7 +949,7 @@ When network connectivity is unavailable, EXTROVELA writes memories to `localSto
 The client registers an event listener for `window.addEventListener('online', syncOfflineMemories)`. Upon network reconnection, queued memories are dispatched to `/api/memories/sync` via POST and cleared upon HTTP 200 confirmation.
 
 ================================================================================
-22. DEVELOPER ONBOARDING AND ENVIRONMENT CONFIGURATION
+24. DEVELOPER ONBOARDING AND ENVIRONMENT CONFIGURATION
 ================================================================================
 
 ### PREREQUISITES
@@ -926,7 +996,7 @@ npm run dev
 ```
 
 ================================================================================
-23. CAPACITOR NATIVE MOBILE COMPILATION GUIDE
+25. CAPACITOR NATIVE MOBILE COMPILATION GUIDE
 ================================================================================
 
 ```bash
@@ -944,7 +1014,7 @@ npx cap open ios
 ```
 
 ================================================================================
-24. COMPLETE FOURTEEN PHASE ENGINEERING HISTORY
+26. COMPLETE FOURTEEN PHASE ENGINEERING HISTORY
 ================================================================================
 
 PHASE 1: Core Foundation & Pure CSS Tokens
@@ -990,7 +1060,7 @@ PHASE 14: Spring Motion & Security Hardening
 Implemented Emil Kowalski spring animations, custom alert provider, and complete pre-push security audit.
 
 ================================================================================
-25. PRE-PUSH DEFENSIVE SECURITY AUDIT REPORT
+27. PRE-PUSH DEFENSIVE SECURITY AUDIT REPORT
 ================================================================================
 
 • Secrets and Keys: Zero private API keys committed. All `.env` files protected by `.gitignore`.
@@ -1001,7 +1071,7 @@ Implemented Emil Kowalski spring animations, custom alert provider, and complete
 • Apple Guideline 5.1.1: Complete account deletion, cache clearing, and data export available.
 
 ================================================================================
-26. DOCUMENTATION SITEMAP AND REPOSITORY INDEX
+28. DOCUMENTATION SITEMAP AND REPOSITORY INDEX
 ================================================================================
 
 1. [Architecture and Standards Guide](docs/ARCHITECTURE.md)
@@ -1016,7 +1086,7 @@ Implemented Emil Kowalski spring animations, custom alert provider, and complete
 10. [Master 21-Area Integration Audit](docs/MASTER_INTEGRATION_AUDIT.md)
 
 ================================================================================
-27. LICENSE AND CREDITS
+29. LICENSE AND CREDITS
 ================================================================================
 
 EXTROVELA is open-source software licensed under the MIT License.
