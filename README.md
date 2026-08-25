@@ -54,7 +54,12 @@ TABLE OF CONTENTS
 26. COMPLETE FOURTEEN PHASE ENGINEERING HISTORY
 27. PRE-PUSH DEFENSIVE SECURITY AUDIT REPORT
 28. DOCUMENTATION SITEMAP AND REPOSITORY INDEX
-29. LICENSE AND CREDITS
+29. ADVANCED HEURISTIC AND AI QUEST ENGINE PIPELINE
+30. SMART RECAPS AND COLLECTION AUTO-ORGANIZATION ALGORITHMS
+31. COMPLETE API ERROR CODES AND FAULT TOLERANCE MATRIX
+32. PRODUCTION DEPLOYMENT & CLOUD TOPOLOGY
+33. PLATFORM GLOSSARY AND DOMAIN TAXONOMY
+34. LICENSE AND CREDITS
 
 ================================================================================
 1. EXECUTIVE SUMMARY AND PRODUCT VISION
@@ -725,6 +730,12 @@ Exact coordinates are strictly protected under EXTROVELA privacy policies:
 15. LEAFLET LIFE MAP AND DISCOVERY GRID SYSTEM
 ================================================================================
 
+<div align="center">
+  <img src="public/lifemap-preview.jpg" alt="EXTROVELA Interactive Life Map Interface" width="100%" />
+</div>
+
+<br />
+
 The interactive world map in `src/components/screens/MapScreen.tsx` utilizes Leaflet with custom dark-themed CartoDB tile layers (`https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png`).
 
 1. MEMORY PINS
@@ -1032,22 +1043,135 @@ Implemented Emil Kowalski spring animations, custom alert provider, and complete
 • Apple Guideline 5.1.1: Complete account deletion, cache clearing, and data export available.
 
 ================================================================================
-28. DOCUMENTATION SITEMAP AND REPOSITORY INDEX
+30. ADVANCED HEURISTIC AND AI QUEST ENGINE PIPELINE
 ================================================================================
 
-1. [Architecture and Standards Guide](docs/ARCHITECTURE.md)
-2. [Environment Configuration and Secrets](docs/ENVIRONMENT.md)
-3. [Backend Gateway and MongoDB Architecture](docs/BACKEND.md)
-4. [Firebase Setup, Rules, and Analytics](docs/FIREBASE_SETUP.md)
-5. [Cloud Firestore Schema Definitions](docs/FIRESTORE_SCHEMA.md)
-6. [AI Cost Control and Token Budgets](docs/COST_CONTROL.md)
-7. [Security Policies and Privacy Engine](docs/SECURITY.md)
-8. [Phase 11 Experience Intelligence Report](docs/PHASE_11_REPORT.md)
-9. [Phase 12 Social Loops and Co-Quests](docs/PHASE_12_REPORT.md)
-10. [Master 21-Area Integration Audit](docs/MASTER_INTEGRATION_AUDIT.md)
+The quest synthesis architecture inside `src/quest-engine/` is built as an extensible pipeline of specialized algorithmic stages:
+
+1. CANDIDATE GENERATOR (`CandidateGenerator.ts`)
+Retrieves base quest prototypes matching the user's declared time envelope and general energy level from the 180+ experience catalog.
+
+2. CONSTRAINT ENGINE (`ConstraintEngine.ts`)
+Applies deterministic hard constraints:
+• Weather Compatibility: Eliminates outdoor rooftop and ridge quests during active rain or high wind events.
+• Daylight Boundary: Restricts panoramic viewpoint quests if current time is past calculated astronomical twilight.
+• Budget Envelope: Excludes commercial tea or transit quests if user selects Free ($0).
+
+3. PERSONALIZATION SCORER (`PersonalizationScorer.ts`)
+Calculates multidimensional relevance scores across user mood, energy, and season vectors:
+
+$$\text{Score}(Q) = w_m \cdot S_{\text{mood}}(Q) + w_e \cdot S_{\text{energy}}(Q) + w_s \cdot S_{\text{season}}(Q) + w_n \cdot S_{\text{novelty}}(Q)$$
+
+Where default weights are $w_m = 0.35, w_e = 0.25, w_s = 0.15, w_n = 0.25$.
+
+4. RANKING STRATEGY (`RankingStrategy.ts`)
+Sorts filtered candidates using normalized composite scores and injects controlled stochastic jitter to ensure non-deterministic daily variety:
+
+$$S_{\text{final}} = S_{\text{composite}} + \operatorname{Uniform}(-0.08, 0.08)$$
+
+5. SAFETY ENGINE (`SafetyEngine.ts`)
+Validates that generated quests adhere to non-hazardous real-world safety rules (e.g. no trespassing, no late-night unlit trails for solo explorers, no high-risk physical stunts).
+
+6. LEARNING SYSTEM (`LearningSystem.ts`)
+Monitors post-experience user feedback (`wouldDoAgain`, mood transformation delta) to calibrate individual category preferences over time.
+
+7. FALLBACK GENERATOR (`FallbackGenerator.ts`)
+Guarantees zero-failure operation: if AI endpoints, database connections, and GPS services simultaneously fail, the fallback generator provides timeless, universal micro-adventures (e.g. Notice 5 Architectural Details, 10-Minute Deep Breathing by a Window).
 
 ================================================================================
-29. LICENSE AND CREDITS
+31. SMART RECAPS AND COLLECTION AUTO-ORGANIZATION ALGORITHMS
+================================================================================
+
+In `src/services/memories/smartCollectionRules.ts`, completed memories are automatically categorized into curated themed albums based on quantitative tags and temporal metadata:
+
+1. GOLDEN HOUR EXPEDITIONS
+Rule: `memory.completedAt` falls within 45 minutes of calculated sunset, or `memory.tags` contains "sunset", "golden-hour", or "viewpoint".
+
+2. COFFEEHOUSE & SANCTUARY RETREATS
+Rule: `memory.tags` contains "cafe", "reading", "teahouse", "sanctuary", or "indoor".
+
+3. RAINY DAY CONTEMPLATION
+Rule: Ambient weather code indicated precipitation, or reflection text references rain, drizzle, or indoor listening.
+
+4. FIRST-TIME REAL-WORLD DISCOVERIES
+Rule: `memory.isFirstTimeExperience == true` (flagged during capture verification).
+
+5. CO-QUEST COMPANION STORIES
+Rule: `memory.isShared == true` or `memory.participants.length > 1`.
+
+================================================================================
+32. COMPLETE API ERROR CODES AND FAULT TOLERANCE MATRIX
+================================================================================
+
+| HTTP Status | Error Code | Trigger Scenario | Gateway Behavior | Client Recovery Action |
+|:---:|---|---|---|---|
+| **400** | `INVALID_PAYLOAD` | Missing required quest or memory fields | Returns validation error details | Highlights missing form inputs |
+| **401** | `UNAUTHORIZED` | Expired or invalid authentication token | Rejects request with 401 | Re-authenticates via anonymous or cached session |
+| **403** | `ADMIN_FORBIDDEN` | Missing valid `ADMIN_SECRET_KEY` | Blocks access to metrics/admin | Suppresses administrative actions |
+| **404** | `TOKEN_EXPIRED` | Co-quest invite URL expired or invalid | Returns expired notice | Offers fresh quest alternative |
+| **429** | `RATE_LIMIT_EXCEEDED` | AI endpoint request limit exceeded | Engages costProtection guard | Seamlessly switches to offline heuristic engine |
+| **500** | `INTERNAL_SERVER_ERROR`| Unhandled gateway exception | Logs to server console | Dispatches local fallback response |
+| **503** | `DATABASE_UNAVAILABLE`| MongoDB Atlas disconnected | Engages Graceful Fallback Mode | Persists to local IndexedDB queue |
+
+================================================================================
+33. PRODUCTION DEPLOYMENT & CLOUD TOPOLOGY
+================================================================================
+
+### 1. FRONTEND DEPLOYMENT (VERCEL / NETLIFY / CLOUD SERVICES)
+1. Link GitHub repository to Vercel.
+2. Framework Preset: `Vite`.
+3. Root Directory: `./` (Repository root).
+4. Build Command: `npm run build`.
+5. Output Directory: `dist`.
+6. Environment Variables: Configure all `VITE_*` parameters.
+
+### 2. BACKEND GATEWAY DEPLOYMENT (RENDER / RAILWAY / DIGITALOCEAN)
+1. Create new Web Service linked to repository.
+2. Root Directory: `server`.
+3. Build Command: `npm install`.
+4. Start Command: `node server.js`.
+5. Environment Variables: Configure `PORT=5000`, `MONGODB_URI`, `ADMIN_SECRET_KEY`, `GEMINI_API_KEY`.
+6. Health Check Path: `/api/health`.
+
+### 3. DATABASE SETUP (MONGODB ATLAS)
+1. Provision free or dedicated M30+ MongoDB Atlas cluster.
+2. Create database user with Read/Write privileges to database `extrovela`.
+3. Add backend server IP addresses to Atlas Network Access Allowlist (`0.0.0.0/0` for serverless environments).
+4. Paste connection string into `server/.env` under `MONGODB_URI`.
+
+### 4. FIREBASE SECURITY RULES DEPLOYMENT
+Deploy declarative security rules using Firebase CLI:
+```bash
+# Authenticate with Firebase
+firebase login
+
+# Deploy Firestore indexes and security rules
+firebase deploy --only firestore:rules,firestore:indexes
+
+# Deploy Cloud Storage security rules
+firebase deploy --only storage
+```
+
+================================================================================
+34. PLATFORM GLOSSARY AND DOMAIN TAXONOMY
+================================================================================
+
+• ANTI-SCREEN ARCHITECTURE: An interface design paradigm that minimizes digital engagement time to maximize real-world physical activity.
+• BEHAVIOURAL ACTIVATION: A psychiatric and psychological treatment protocol encouraging structured physical activities to break depressive inertia.
+• CO-QUEST: A synchronized real-world experience undertaken by two or more individuals connected via cryptographic invite links.
+• DISCOVERY NODE: A geographical coordinate marked on the Life Map representing an unexplored landmark or point of contemplation.
+• EPISODIC MEMORY ANCHOR: A vivid long-term memory formed by performing a novel physical action in an unfamiliar setting.
+• FOG OF EXPLORATION: A visual cartographic shader over the Leaflet Life Map that conceals unvisited metropolitan territory.
+• GOLDEN HOUR WINDOW: The astronomical 45-minute period immediately preceding sunset characterized by warm, low-angle sunlight.
+• LIFE MAP: The personal, cumulative visual chronicle of all physical territories illuminated by the explorer's completed quests.
+• MICRO-ADVENTURE: A low-friction, 15–20 minute real-world activity designed to fit into ordinary daily schedules.
+• PHONE-FREE IMMERSION: A dedicated application state with active background timers and procedural audio designed for screen-locked real-world exploration.
+• PROCEDURAL SOUNDSCAPE: Real-time mathematical synthesis of acoustic nature environments via the Web Audio API without pre-recorded media files.
+• SPENCER'S FORMULA: An astronomical trigonometric algorithm estimating solar declination angle from the calendar day number.
+• SHANNON CATEGORY ENTROPY: A statistical diversity metric ($H = -\sum p \log_2 p$) measuring the distribution balance of completed experience categories.
+
+================================================================================
+35. LICENSE AND CREDITS
 ================================================================================
 
 EXTROVELA is open-source software licensed under the MIT License.
