@@ -499,6 +499,95 @@ Every component, architecture decision, and security rule is documented in detai
 
 ---
 
+## 📐 Project Wiki & README Structural Blueprint
+
+To write a README as comprehensive and professional as this one for your next project, you should follow its specific structural blueprint. It goes far beyond a standard README by acting as a complete project wiki.
+
+Here is the exact blueprint of what was implemented, section by section, so you can replicate it:
+
+### 1. The Hook & Introduction
+* **Project Title & Subtitle:** Clear name with a catchy, bolded one-liner explaining exactly what the project is.
+* **Elevator Pitch:** A short paragraph explaining the core functionality and business value.
+* **Table of Contents:** Linked anchors so developers can jump straight to technical specs.
+
+### 2. The Context
+* **The Idea (Problem & Solution):** Explains *why* the project was built. It defines the initial manual problem (e.g., routine fatigue, social media scrolling, loneliness) and how the software automates and solves it.
+
+### 3. High-Level Engineering
+* **Architecture Diagram:** An ASCII-art diagram showing how the Frontend, Backend, Database, and External APIs communicate. *(This makes you look like a senior developer who understands system design).*
+* **Data Flow:** Step-by-step text charts explaining the business logic for complex features (e.g., the exact lifecycle of quest generation, solar calculations, memory audio capture).
+
+### 4. The Codebase Breakdown
+* **Project Structure (Tree):** A simplified folder tree (`├── client` / `├── server` / `├── docs`) with comments explaining the purpose of specific files or directories.
+* **Tech Stack Tables:** Grouped by Frontend, Backend, and External Services, listing the technology, its specific purpose in the app, and tier/cost.
+
+### 5. Product Documentation
+* **Feature Map:** Segmented tables (User vs. Admin features) listing the feature, its completion status (✅), and a brief description.
+* **Database Models:** Simplified JSON structures showing the exact schema for core database collections (`User`, `Quest`, `Memory`, `DiscoveryPin`).
+* **API Reference:** Grouped lists of backend endpoints (`/api/quests`, `/api/memories`, `/api/growth`, `/api/admin`) detailing the HTTP method and route.
+
+### 6. Developer Onboarding (The "How-To")
+* **Setup & Installation:** Copy-pasteable terminal commands to clone, install dependencies, and run the dev servers.
+* **Environment Variables:** A clear list of what keys are required in the `.env` files without exposing real secrets.
+* **Deployment Guide:** Quick steps on how to push the project to production (e.g., Capacitor for native iOS/Android, Vercel/Render for web/API).
+
+### 7. Project Management & Quality
+* **Build History / Phases:** A roadmap showing how the project evolved from MVP (Phase 1) to a complex platform (Phase 14).
+* **Security Section:** A bulleted list of security measures implemented (Rate limiting, zero-secret clients, CORS allowlists, GPS fuzzing).
+* **Special Features:** Highlighting unique technical implementations like Procedural Audio Synthesis, Leaflet Life Maps, and Canvas Story Cards.
+
+---
+
+## 🔬 Deep-Dive Technical Systems Encyclopedia
+
+### 1. Astronomical Solar Declination & Golden Hour Math
+The solar calculation algorithm in [`src/lib/ai-quest-engine.ts`](src/lib/ai-quest-engine.ts) computes exact local solar noon, sunset, and golden hour windows using astronomical equations:
+
+$$\delta = 23.45^\circ \cdot \sin\left(\frac{284 + n}{365} \cdot 360^\circ\right)$$
+
+$$\omega = \arccos(-\tan(\phi) \cdot \tan(\delta))$$
+
+$$\text{Solar Noon} = 12.0 - \frac{\text{Longitude}}{15^\circ} + \frac{\text{Timezone Offset}}{60}$$
+
+$$\text{Sunset Time} = \text{Solar Noon} + \frac{\omega}{15^\circ}$$
+
+$$\text{Golden Hour Start} = \text{Sunset Time} - 45 \text{ minutes}$$
+
+### 2. Web Audio API Procedural Soundscapes
+The ambient sound generator in [`src/components/SoundscapeDrawer.tsx`](src/components/SoundscapeDrawer.tsx) uses zero external audio files. It synthesizes soothing nature ambiance in real time using the browser's Web Audio API:
+- **Rain Engine:** Generates white noise through a `BiquadFilterNode` (lowpass at 800Hz) with random gain drops simulating falling raindrops.
+- **Ocean Waves:** Modulates pink noise with a low-frequency oscillator (LFO at 0.1Hz) to simulate natural wave swell cycles.
+- **Forest Ambiance:** High-frequency sine wave pings (2.4kHz–4.8kHz) with randomized exponential decay envelopes to simulate chirping birds.
+- **Wind:** Resonant bandpass filter sweeps through brownian noise layers.
+
+### 3. Anti-Repetition & Entropy Scoring
+To prevent routine fatigue, [`src/services/intelligence/diversityEngine.ts`](src/services/intelligence/diversityEngine.ts) tracks category entropy across the user's last $N$ completed experiences:
+
+$$\text{Entropy Score} = -\sum_{i=1}^{k} p_i \log_2(p_i)$$
+
+Where $p_i$ is the proportion of category $i$ across recent memories. If entropy drops below the threshold ($\le 1.2$), the engine penalizes frequently repeated categories and boosts contrasting experiences (e.g., recommending a golden-hour nature walk if the user has completed consecutive indoor cafe sessions).
+
+### 4. 9:16 HTML5 Canvas Story Generation Pipeline
+The social card exporter in [`src/components/ShareStoryModal.tsx`](src/components/ShareStoryModal.tsx) renders a crisp 1080×1920 mobile story card directly onto an HTML5 Canvas:
+1. Loads the user's quest photo proof and applies a subtle linear gradient overlay.
+2. Draws brand typography, quest badge, time, city, and reflection quote.
+3. Renders a custom exploration watermark and QR discovery token.
+4. Exports as high-resolution PNG blob with automatic fallback between native Web Share API (`navigator.share`) and direct file download.
+
+---
+
+## 📱 Native Android & iOS Permissions Matrix
+
+| Permission | Android (`AndroidManifest.xml`) | iOS (`Info.plist`) | Reason |
+|---|---|---|---|
+| **Camera** | `android.permission.CAMERA` | `NSCameraUsageDescription` | Real-world photo proof verification |
+| **Geolocation** | `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION` | `NSLocationWhenInUseUsageDescription` | Local city resolution & Life Map pins |
+| **Microphone** | `android.permission.RECORD_AUDIO` | `NSMicrophoneUsageDescription` | 15-second ambient nature audio recording |
+| **Haptics** | `android.permission.VIBRATE` | Automatic | Tactile touch feedback on quest actions |
+| **Notifications** | `POST_NOTIFICATIONS` | Push capability | Daily morning quest reminder notification |
+
+---
+
 ## 📄 License
 
 Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
