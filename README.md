@@ -992,10 +992,14 @@ To write a README as comprehensive and professional as EXTROVELA for your next p
 > **Pro-Tip for Project Documentation:**
 > Start with the **Feature Map** and **Tech Stack** first to outline what you built, then generate the **API Reference** and **Project Structure** directly from your codebase.
 
+## 🌐 Connect & Socials
+
+[![Facebook](https://img.shields.io/badge/Facebook-%231877F2.svg?logo=Facebook&logoColor=white)](https://facebook.com/Kantaraj.Luitel) [![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white)](https://instagram.com/susantgamerz) [![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white)](https://linkedin.com/in/kantaraj-luitel) [![Pinterest](https://img.shields.io/badge/Pinterest-%23E60023.svg?logo=Pinterest&logoColor=white)](https://pinterest.com/susantluitel) [![Reddit](https://img.shields.io/badge/Reddit-%23FF4500.svg?logo=Reddit&logoColor=white)](https://reddit.com/user/Successful-Twist2608) [![TikTok](https://img.shields.io/badge/TikTok-%23000000.svg?logo=TikTok&logoColor=white)](https://tiktok.com/@vortexeditz34) [![X](https://img.shields.io/badge/X-black.svg?logo=X&logoColor=white)](https://x.com/Susantedit) [![Codepen](https://img.shields.io/badge/Codepen-000000?logo=codepen&logoColor=white)](https://codepen.io/susant-gamerz) [![GitHub](https://img.shields.io/badge/GitHub-181717.svg?logo=github&logoColor=white)](https://github.com/susantedit) [![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?logo=whatsapp&logoColor=white)](https://wa.me/9779708838261) [![Email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:susantedit@gmail.com)
+
 <hr />
 
 ## 35. License and Credits
 
 EXTROVELA is open-source software licensed under the MIT License.
 
-Built with dedication for real-world explorers by **Susant**.
+Built with dedication for real-world explorers by **Susant** (Kantaraj Luitel).
