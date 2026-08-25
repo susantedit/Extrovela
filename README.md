@@ -356,33 +356,256 @@ Users can invite friends or meet companions by sharing a secure HMAC-SHA256 sign
 Zero native browser alert popups. All confirmations, warnings, and toasts render through an animated, haptic-enabled custom dialog system.
 
 ================================================================================
-8. ASTRONOMICAL SOLAR AND CELESTIAL PHYSICS ENGINE
+8. MATHEMATICAL FOUNDATIONS & ALGORITHMIC ARCHITECTURE
 ================================================================================
 
-EXTROVELA implements exact astronomical solar positioning algorithms in `src/lib/ai-quest-engine.ts` to schedule golden-hour experiences with zero API overhead:
+EXTROVELA is built upon seven rigorous mathematical and algorithmic frameworks that power its astronomical timing, recommendation intelligence, acoustic synthesis, geospatial discovery, motion physics, and cryptography. Below is the detailed breakdown of the WHAT, HOW, WHEN, and WHY for each system.
 
-1. SOLAR DECLINATION FORMULA
-The angular distance of the Sun north or south of the Earth's celestial equator is approximated using Spencer's formula:
+--------------------------------------------------------------------------------
+DOMAIN 1: ASTRONOMICAL SOLAR POSITIONING AND CELESTIAL MECHANICS
+--------------------------------------------------------------------------------
+
+WHAT:
+A zero-dependency celestial calculation engine that computes exact local solar noon, astronomical sunrise, sunset, and golden hour windows for any geographic coordinate on Earth.
+
+HOW:
+1. Solar Declination ($\delta$):
+The tilt angle of the Earth relative to the Sun on day $n$ of the year (where $n \in [1, 365]$) is calculated using Spencer's solar declination formula:
 
 $$\delta = 23.45^\circ \cdot \sin\left(\frac{284 + n}{365} \cdot 360^\circ\right)$$
 
-Where $n$ represents the day number of the current calendar year (1 to 365).
+In radians:
 
-2. HOUR ANGLE CALCULATION
-The solar hour angle at sunset ($\omega$) for a given latitude ($\phi$) is determined by:
+$$\delta_{\text{rad}} = \delta \cdot \frac{\pi}{180}$$
 
-$$\omega = \arccos(-\tan(\phi) \cdot \tan(\delta))$$
+2. Sunset Hour Angle ($\omega$):
+The angular distance the Earth must rotate from solar noon to sunset for latitude $\phi$ is given by:
 
-3. LOCAL SOLAR NOON AND SUNSET TIMES
-Local solar noon and true sunset hours are derived using geographic longitude and local timezone offsets:
+$$\omega = \arccos\left(-\tan(\phi_{\text{rad}}) \cdot \tan(\delta_{\text{rad}})\right)$$
 
-$$\text{Solar Noon} = 12.0 - \frac{\text{Longitude}}{15^\circ} + \frac{\text{Timezone Offset in Minutes}}{60}$$
+Converting $\omega$ from radians to degrees:
 
-$$\text{Sunset Hour} = \text{Solar Noon} + \frac{\omega}{15^\circ}$$
+$$\omega_{\text{deg}} = \omega \cdot \frac{180}{\pi}$$
 
-$$\text{Golden Hour Window} = [\text{Sunset Hour} - 0.75, \text{Sunset Hour}]$$
+3. Solar Noon and Sunset Hours:
+Using the explorer's longitude $\lambda$ and local timezone offset in minutes $T_{\text{offset}}$:
 
-If the current system clock falls within 45 minutes prior to calculated sunset, the quest engine dynamically promotes sunset viewpoint quests across the Home Screen.
+$$\text{Solar Noon (Hours)} = 12.0 - \frac{\lambda}{15^\circ} + \frac{T_{\text{offset}}}{60}$$
+
+$$\text{Sunset Hour} = \text{Solar Noon} + \frac{\omega_{\text{deg}}}{15^\circ}$$
+
+$$\text{Golden Hour Start} = \text{Sunset Hour} - 0.75 \text{ (45 minutes prior)}$$
+
+WHEN:
+Evaluated on app initialization and whenever quest generation is triggered.
+
+WHY:
+Enables the app to identify the exact 45-minute window before sunset in any city on Earth without making costly third-party API calls, allowing the engine to promote golden-hour viewpoints precisely when the physical sky is visually breathtaking.
+
+--------------------------------------------------------------------------------
+DOMAIN 2: INFORMATION THEORY, SHANNON ENTROPY, AND ANTI-REPETITION
+--------------------------------------------------------------------------------
+
+WHAT:
+A statistical diversity monitoring system that measures the predictability and category concentration of the user's recent experiences.
+
+HOW:
+Given a sliding window of the user's last $N$ completed memories ($N=10$) across $K$ discrete categories (Explore, Nature, Create, Connect, Reflect):
+
+1. Category Probability Mass Function:
+
+$$P(c_i) = \frac{\text{Count of quests in category } c_i}{N}, \quad \sum_{i=1}^{K} P(c_i) = 1$$
+
+2. Shannon Category Entropy $H(X)$:
+
+$$H(X) = -\sum_{i=1}^{K} P(c_i) \log_2 P(c_i)$$
+
+3. Entropy Normalization:
+Maximal entropy occurs under a uniform distribution where $H_{\max} = \log_2(K) = \log_2(5) \approx 2.322 \text{ bits}$. The normalized diversity score is:
+
+$$D = \frac{H(X)}{H_{\max}} \in [0, 1]$$
+
+4. Dynamic Category Weight Penalty:
+If category $c_i$ exceeds a threshold $P(c_i) \ge 0.40$ (or if $H(X) < 1.25 \text{ bits}$), the candidate generation weight $W(c_i)$ for the dominant category is depressed while under-represented categories $c_j$ receive a diversity boost:
+
+$$W(c_i) = W_0 \cdot \exp\left(-2.5 \cdot P(c_i)\right)$$
+
+$$W(c_j) = W_0 \cdot \left(1.0 + \frac{1.0}{P(c_j) + 0.05}\right)$$
+
+WHEN:
+Calculated prior to quest candidate filtering whenever Today's Quest or personalized recommendations are generated.
+
+WHY:
+Prevents behavioral fatigue and routine stagnation. If a user naturally defaults to quiet cafe visits 5 days in a row, the entropy engine detects the monotony and actively nudges them toward a refreshing outdoor hike or creative observation quest.
+
+--------------------------------------------------------------------------------
+DOMAIN 3: GEOSPATIAL HAVERSINE AND GEODESIC SPHERICAL DISTANCE
+--------------------------------------------------------------------------------
+
+WHAT:
+Great-circle distance computation between the user's current GPS position and discovery pins or landmark nodes across the spherical surface of Earth.
+
+HOW:
+For user coordinates $(\phi_1, \lambda_1)$ and target coordinate $(\phi_2, \lambda_2)$ in radians:
+
+$$\Delta\phi = \phi_2 - \phi_1, \quad \Delta\lambda = \lambda_2 - \lambda_1$$
+
+1. Haversine Square Half-Chord:
+
+$$a = \sin^2\left(\frac{\Delta\phi}{2}\right) + \cos(\phi_1) \cdot \cos(\phi_2) \cdot \sin^2\left(\frac{\Delta\lambda}{2}\right)$$
+
+2. Angular Distance in Radians:
+
+$$c = 2 \cdot \operatorname{atan2}\left(\sqrt{a}, \sqrt{1 - a}\right)$$
+
+3. Surface Distance in Kilometers (Mean Earth radius $R = 6371.0 \text{ km}$):
+
+$$d = R \cdot c$$
+
+4. Proximity Radius Unlock Condition:
+A discovery landmark or co-quest pin is unlocked if:
+
+$$d \le 0.150 \text{ km (150 meters)}$$
+
+WHEN:
+Evaluated on map panning, proximity alerts, and when sorting nearby quests by walking distance.
+
+WHY:
+Accurately measures physical proximity on a spherical geoid without planar projection distortions, ensuring reliable discovery node unlocks and realistic walking duration estimates.
+
+--------------------------------------------------------------------------------
+DOMAIN 4: DIGITAL SIGNAL PROCESSING AND PROCEDURAL ACOUSTIC SYNTHESIS
+--------------------------------------------------------------------------------
+
+WHAT:
+In-memory mathematical synthesis of continuous nature soundscapes (Rain, Ocean, Birds, Wind) via the Web Audio API without loading external audio assets.
+
+HOW:
+1. White Noise Generation:
+Uniform random sampling over interval $[-1.0, 1.0]$:
+
+$$x[n] \sim U(-1.0, 1.0)$$
+
+2. Pink Noise Voss-McCartney Filter ($1/f$ Spectral Density):
+Iterative summation of octave-decimated white noise generators producing a $-3\text{ dB/octave}$ power spectral density roll-off.
+
+3. Second-Order Biquad Difference Equations:
+Filtering audio buffers through lowpass and bandpass nodes using recursive difference equations:
+
+$$y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2]$$
+
+For a lowpass filter with cutoff frequency $f_c = 750\text{ Hz}$ and resonance $Q = 1.2$:
+
+$$\omega_0 = 2\pi \cdot \frac{f_c}{f_s}, \quad \alpha = \frac{\sin(\omega_0)}{2Q}$$
+
+$$b_0 = \frac{1 - \cos(\omega_0)}{2}, \quad b_1 = 1 - \cos(\omega_0), \quad b_2 = \frac{1 - \cos(\omega_0)}{2}$$
+
+$$a_0 = 1 + \alpha, \quad a_1 = -2\cos(\omega_0), \quad a_2 = 1 - \alpha$$
+
+4. Ocean Swell Low-Frequency Oscillator (LFO):
+A sinusoidal gain multiplier running at frequency $f = 0.08\text{ Hz}$:
+
+$$G(t) = G_0 + A \cdot \sin(2\pi \cdot 0.08 \cdot t)$$
+
+Where $G_0 = 0.25$ and $A = 0.20$, modulating volume between $0.05$ and $0.45$.
+
+WHEN:
+Runs in an isolated Web Audio processing thread whenever the Soundscape Drawer is active during quest immersion.
+
+WHY:
+Provides instant, responsive, and infinitely non-repeating acoustic relaxation environments with zero data bandwidth consumption, 0 bytes of network asset downloads, and zero battery drain from media streaming.
+
+--------------------------------------------------------------------------------
+DOMAIN 5: PHYSICAL SPRING DYNAMICS AND CUBIC-BEZIER MOTION CALCULUS
+--------------------------------------------------------------------------------
+
+WHAT:
+Mathematical motion curves that give user interface components physical mass, momentum, velocity, and spring overshoot.
+
+HOW:
+1. Cubic-Bezier Parametric Formulation:
+A parametric curve $B(t)$ for $t \in [0, 1]$ defined by control points $P_0(0,0), P_1(x_1,y_1), P_2(x_2,y_2), P_3(1,1)$:
+
+$$B(t) = (1-t)^3 P_0 + 3(1-t)^2 t P_1 + 3(1-t) t^2 P_2 + t^3 P_3$$
+
+2. EXTROVELA Spring Motion Coordinates:
+• `--ease-spring`: $P_1 = (0.175, 0.885), \quad P_2 = (0.32, 1.22)$
+• Peak Overshoot: $y_{\max} = 1.22$ (+22% spring pop expansion before resting at $1.0$).
+• Derivative Velocity: At $t=0$, initial acceleration $\frac{dy}{dt} = \frac{3y_1}{3x_1} = \frac{0.885}{0.175} \approx 5.05\text{ units/sec}$.
+
+3. Staggered Geometric Time Progression:
+For card collections of count $M$, each item $k \in [1, M]$ delays entrance according to an arithmetic progression:
+
+$$\Delta t_k = t_{\text{base}} + (k - 1) \cdot 0.040 \text{ seconds}$$
+
+WHEN:
+Applied across all interactive cards, bottom navigation tab selection, modal launches, and list renders.
+
+WHY:
+Emulates physical spring-damper dynamics found in native Apple iOS hardware, making the web interface feel tactile, weighted, and responsive.
+
+--------------------------------------------------------------------------------
+DOMAIN 6: CRYPTOGRAPHIC HMAC-SHA256 TOKENIZATION
+--------------------------------------------------------------------------------
+
+WHAT:
+Cryptographic signing and verification of co-quest invitations and user session handoffs.
+
+HOW:
+1. Token Structure:
+A URL-safe string structured as:
+
+$$\text{Token} = \text{Base64Url}(\text{Header}) \mathbin{\Vert} "." \mathbin{\Vert} \text{Base64Url}(\text{Payload}) \mathbin{\Vert} "." \mathbin{\Vert} \text{Base64Url}(\text{Signature})$$
+
+2. Hash-based Message Authentication Code:
+
+$$\text{HMAC}(K, m) = H\Big((K' \oplus \text{opad}) \mathbin{\Vert} H\big((K' \oplus \text{ipad}) \mathbin{\Vert} m\big)\Big)$$
+
+Where:
+• $H$: SHA-256 cryptographic hashing function (256-bit output).
+• $K'$: Secret key padded to 64-byte block size.
+• $\text{ipad}$: Inner padding byte sequence `0x36` repeated 64 times.
+• $\text{opad}$: Outer padding byte sequence `0x5C` repeated 64 times.
+• $m$: Concatenated $\text{Header} \mathbin{\Vert} "." \mathbin{\Vert} \text{Payload}$.
+
+3. Verification Condition:
+The gateway recomputes the signature over the received header and payload using constant-time comparison to prevent timing attacks:
+
+$$\operatorname{crypto.timingSafeEqual}(\text{Signature}_{\text{calc}}, \text{Signature}_{\text{received}}) == \text{true} \quad \land \quad T_{\text{current}} < T_{\text{expiry}}$$
+
+WHEN:
+Generated when creating co-quest invite URLs and validated when a companion accesses an invite.
+
+WHY:
+Guarantees tamper-proof peer-to-peer invitation security without exposing database IDs, preventing link spoofing or unauthorized session interception.
+
+--------------------------------------------------------------------------------
+DOMAIN 7: DISCRETE GRID AREA COVERAGE AND CITY EXPLORATION GEOMETRY
+--------------------------------------------------------------------------------
+
+WHAT:
+A spatial partitioning algorithm that tracks the percentage of a metropolitan area personally explored by the user.
+
+HOW:
+1. Bounding Box Tessellation:
+For a designated city bounding box $[\phi_{\min}, \phi_{\max}] \times [\lambda_{\min}, \lambda_{\max}]$, the territory is partitioned into a discrete matrix of $M \times N$ cells of size $\Delta\phi \approx 0.0045^\circ$ and $\Delta\lambda \approx 0.0055^\circ$ ($\approx 500\text{m} \times 500\text{m}$ grid cells).
+
+2. Spatial Hash Mapping:
+For any completed experience coordinate $(\phi_m, \lambda_m)$:
+
+$$\operatorname{Row} = \left\lfloor \frac{\phi_m - \phi_{\min}}{\Delta\phi} \right\rfloor, \quad \operatorname{Col} = \left\lfloor \frac{\lambda_m - \lambda_{\min}}{\Delta\lambda} \right\rfloor$$
+
+$$\text{Cell ID} = \operatorname{Row} \times N + \operatorname{Col}$$
+
+3. City Exploration Progress Metric:
+
+$$\text{Exploration } \% = \min\left(100.0, \frac{|\text{Set of Unique Visited Cell IDs}|}{\text{Total Habitable Grid Cells in Municipality}} \times 100\right)$$
+
+WHEN:
+Updated whenever a new memory containing geographic coordinates is saved.
+
+WHY:
+Provides a transparent, game-like exploration progress metric that incentivizes users to visit diverse neighborhoods across their city rather than repeating the same block.
 
 ================================================================================
 9. WEATHER-ADAPTIVE CONTEXTUAL ENGINE
