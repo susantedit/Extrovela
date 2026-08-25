@@ -240,40 +240,98 @@ Extrovela/
 
 ---
 
-## 🔄 Data Flow
+---
 
-### 1. Quest Generation & Adaptation Flow
-```
-User opens app
-      ↓
-LocationService checks GPS → OpenStreetMap Nominatim resolves City Name (e.g. "Tokyo")
-      ↓
-Astronomical Engine calculates local Sunset & Golden Hour for local timezone
-      ↓
-WeatherService checks local temperature and outdoor conditions
-      ↓
-Anti-Repetition Engine evaluates last 3 memories (checks indoor/outdoor balance)
-      ↓
-AI Gateway or Curated Heuristic Engine matches best candidate quests
-      ↓
-HomeScreen renders Today's Featured Quest with ambient breathing aura
+## 🔄 Interactive Data & Lifecycle Flowcharts
+
+### 1. Contextual Quest Synthesis & Personalization Flowchart
+
+```mermaid
+flowchart TD
+    Start([User Opens EXTROVELA]) --> InitContext[Initialize Native Shell & Permissions]
+    
+    subgraph GeoEngine [1. Global Geolocation & Solar Engine]
+        InitContext --> GetGPS[LocationService.getCurrentLocation]
+        GetGPS --> ReverseGeo[Nominatim Reverse Geocoding]
+        ReverseGeo --> CityResolved[City Name Resolved e.g. London / Tokyo / Kathmandu]
+        CityResolved --> SunCalc[Calculate Astronomical Solar Declination & Sunset]
+        CityResolved --> WeatherFetch[Query Open-Meteo Weather API]
+    end
+
+    subgraph Intelligence [2. Experience Intelligence & Entropy]
+        SunCalc & WeatherFetch --> EntropyCheck[Check Recent Memory Entropy & Anti-Repetition]
+        EntropyCheck --> FilterPool[Filter 180+ Local & Contextual Quests]
+        FilterPool --> AIGateway{Backend AI Available?}
+        AIGateway -- Yes --> GeminiSynth[Gemini 1.5 Pro Quest Synthesis]
+        AIGateway -- No / Offline --> HeuristicMatch[Heuristic Candidate Ranking Engine]
+    end
+
+    subgraph Presentation [3. Native Mobile Presentation]
+        GeminiSynth & HeuristicMatch --> RenderHero[Render Today's Featured Quest with Breathing Aura]
+        RenderHero --> UserSelects[User Selects & Begins Quest]
+    end
 ```
 
-### 2. Experience Completion & Memory Capture Flow
+---
+
+### 2. Experience Completion & Media Synchronization Pipeline
+
+```mermaid
+flowchart TD
+    Action[User Completes Real-World Experience] --> OpenCapture[Launch CaptureModal with Spring Easing]
+    
+    subgraph MediaCapture [1. Hardware Media Capture]
+        OpenCapture --> PhotoCam[Capacitor Camera API: Take Proof Photo]
+        OpenCapture --> AudioRec[Web Audio API: 15s Ambient Sound Recording]
+        OpenCapture --> UserNotes[Enter Reflections, Mood Score & Star Rating]
+    end
+
+    subgraph LocalStorageEngine [2. Local-First Offline Storage]
+        PhotoCam & AudioRec & UserNotes --> SaveLocal[Save to Local IndexedDB & Storage instantly]
+        SaveLocal --> UpdateMap[Drop Glowing Discovery Pin on Life Map]
+        SaveLocal --> IncrementStats[Increment City Exploration % & Streak Days]
+    end
+
+    subgraph CloudSync [3. Resilient Cloud Synchronization]
+        SaveLocal --> NetworkCheck{Online Connection?}
+        NetworkCheck -- Yes --> UploadCloud[Upload Photo & Audio to Firebase Storage / MongoDB]
+        NetworkCheck -- No --> QueueOffline[Enqueue in OfflineSyncQueue with Exponential Backoff]
+        QueueOffline -. On Online Event .-> UploadCloud
+    end
+
+    subgraph StorySharing [4. Social Story Generation]
+        SaveLocal --> CanvasRender[Render 1080x1920 9:16 HTML5 Canvas Card]
+        CanvasRender --> ShareAPI[Web Share API / PNG Download]
+    end
 ```
-User completes quest in real life
-      ↓
-Opens Capture Modal → Takes photo proof (Capacitor Camera)
-      ↓
-Records 15-second ambient sound note (Web Audio API MediaRecorder)
-      ↓
-Fills out reflection, mood score, and rating
-      ↓
-Saved to local storage instantly + queued for cloud synchronization
-      ↓
-New discovery pin dropped on Life Map + Exploration % incremented
-      ↓
-Optionally generates branded 9:16 story card for Instagram / TikTok
+
+---
+
+### 3. Co-Quest Companion Invite Lifecycle
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Host as Quest Host
+    participant App as EXTROVELA Client
+    participant Gateway as Express Backend
+    actor Companion as Mindful Companion
+
+    Host->>App: Clicks "Invite Companion" on Quest
+    App->>Gateway: POST /api/growth/invite-token {questId, userId}
+    Gateway-->>App: Returns Signed Cryptographic Token (HMAC-SHA256)
+    App->>Host: Opens Share Sheet (WhatsApp / Telegram / Link)
+    Host->>Companion: Sends Invite Link
+    Companion->>App: Opens Link (extrovela.app/invite/{token})
+    App->>Gateway: GET /api/growth/invite/{token}
+    Gateway-->>App: Validates Token & Returns Quest Payload
+    Companion->>App: Accepts Co-Quest Invitation
+    App->>Host: Real-time Peer Notification via Firebase / WebSocket
+    Note over Host, Companion: Both complete the quest in the real world together!
+    Host->>App: Logs Shared Experience Proof
+    Companion->>App: Logs Shared Experience Proof
+    App->>Gateway: POST /api/memories {isShared: true, companionId}
+    Gateway-->>App: Co-Quest Milestone Badges Unlocked!
 ```
 
 ---
