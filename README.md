@@ -1,14 +1,18 @@
 # EXTROVELA: Real-World Experience Engine & Open-World Life Platform
 
 <div align="center">
-  <img src="public/logo-dark.png" alt="EXTROVELA Brand Emblem" width="360" />
+  <img src="public/hero-banner.jpg" alt="EXTROVELA Real-World Experience Engine" width="100%" />
+
+  <br /><br />
+
+  <img src="public/logo-dark.png" alt="EXTROVELA Brand Emblem" width="340" />
   <h2>Stop scrolling. Start experiencing.</h2>
   <p><em>Don't just get through your day. Make today different.</em></p>
 
   <p>
     <a href="#table-of-contents">Table of Contents</a> •
     <a href="#system-architecture">Architecture</a> •
-    <a href="#core-experience-loop">Core Loop</a> •
+    <a href="#interactive-flowcharts-and-state-diagrams">Interactive Flowcharts</a> •
     <a href="#architectural-trade-offs-and-rationale">Trade-Offs & Rationale</a> •
     <a href="#mathematical-foundations-and-algorithmic-architecture">Mathematical Foundations</a> •
     <a href="#api-reference">API Reference</a> •
@@ -24,18 +28,18 @@ TABLE OF CONTENTS
 
 1. EXECUTIVE SUMMARY AND PRODUCT VISION
 2. PROBLEM STATEMENT AND PSYCHOLOGICAL FOUNDATIONS
-3. THE EXTROVELA CORE EXPERIENCE LOOP
-4. SYSTEM ARCHITECTURE AND HIGH-LEVEL DESIGN
+3. THE EXTROVELA SIX-STAGE EXPERIENCE LOOP
+4. COMPLETE SYSTEM ARCHITECTURE AND DATA TOPOLOGY
 5. INTERACTIVE FLOWCHARTS AND STATE DIAGRAMS
-6. ARCHITECTURAL DECISIONS, TRADE-OFFS, AND RATIONALE (WHY, HOW, WHEN, WHY NOT)
-7. REPOSITORY FILE CATALOG AND DIRECTORY TREE
-8. FEATURE ENCYCLOPEDIA AND CAPABILITIES
+6. ARCHITECTURAL DECISIONS AND TRADE-OFF RATIONALE (WHY, HOW, WHEN, WHY NOT)
+7. COMPREHENSIVE COMPONENT CATALOG AND DIRECTORY MAP
+8. MASTER QUEST TAXONOMY AND ONTOLOGY (180+ REAL EXPERIENCES)
 9. MATHEMATICAL FOUNDATIONS AND ALGORITHMIC ARCHITECTURE (WHAT, HOW, WHEN, WHY)
 10. ASTRONOMICAL SOLAR AND CELESTIAL PHYSICS ENGINE
 11. WEATHER-ADAPTIVE CONTEXTUAL ENGINE
-12. PROCEDURAL AMBIENT AUDIO SYNTHESIS ENGINE
+12. PROCEDURAL AMBIENT AUDIO SYNTHESIS DSP ENGINE
 13. HARDWARE MEDIA CAPTURE AND 9:16 CANVAS STORY EXPORTER
-14. GEOLOCATION, REVERSE GEOCODING, AND PRIVACY ENGINE
+14. GEOLOCATION, REVERSE GEOCODING, AND PRIVACY FUZZING
 15. LEAFLET LIFE MAP AND DISCOVERY GRID SYSTEM
 16. ANTI-REPETITION AND CATEGORY ENTROPY ALGORITHM
 17. CO-QUESTS, CRYPTOGRAPHIC INVITES, AND SOCIAL LOOPS
@@ -43,9 +47,9 @@ TABLE OF CONTENTS
 19. GLASSMORPHIC ALERT AND TOAST SYSTEM
 20. COMPLETE REST API SPECIFICATION
 21. MONGODB AND FIRESTORE DATABASE MODELS
-22. SECURITY RULES AND PERMISSION MATRICES
-23. OFFLINE-FIRST SYNCHRONIZATION PROTOCOL
-24. DEVELOPER ONBOARDING AND ENVIRONMENT CONFIGURATION
+22. DECLARATIVE SECURITY RULES AND PERMISSION MATRICES
+23. OFFLINE-FIRST SYNCHRONIZATION AND QUEUE PROTOCOL
+24. DEVELOPER ONBOARDING AND CONFIGURATION GUIDE
 25. CAPACITOR NATIVE MOBILE COMPILATION GUIDE
 26. COMPLETE FOURTEEN PHASE ENGINEERING HISTORY
 27. PRE-PUSH DEFENSIVE SECURITY AUDIT REPORT
@@ -56,21 +60,21 @@ TABLE OF CONTENTS
 1. EXECUTIVE SUMMARY AND PRODUCT VISION
 ================================================================================
 
-EXTROVELA is a cross-platform mobile and web application engineered to solve the pervasive modern crisis of routine paralysis, digital screen fatigue, and urban loneliness. In contemporary society, people spend upwards of eight to twelve hours per day looking at computer screens and smartphones, consuming passive algorithmic entertainment that leaves them feeling isolated and unfulfilled.
+EXTROVELA is a cross-platform mobile and web application engineered to solve the pervasive modern crisis of routine paralysis, digital screen fatigue, and urban loneliness. In contemporary society, people spend upwards of eight to twelve hours per day looking at computer screens and smartphones, consuming passive algorithmic entertainment that leaves them feeling isolated, anxious, and unfulfilled.
 
-Even when people feel an active desire to step outside, explore their surrounding city, or experience something novel, they are frequently paralyzed by decision fatigue. Traditional discovery tools like Yelp, TripAdvisor, or Google Maps are designed for consumer commerce and tourism rather than intentional personal living; they present overwhelming lists of commercial venues without context, encouragement, or narrative meaning.
+Even when people feel an active desire to step outside, explore their surrounding city, or experience something novel, they are frequently paralyzed by decision fatigue. Traditional discovery tools like Yelp, TripAdvisor, or Google Maps are designed for consumer commerce, dining, and tourism rather than intentional personal living; they present overwhelming lists of commercial venues without context, encouragement, emotional attunement, or narrative meaning.
 
 EXTROVELA is built on a fundamentally different philosophy:
-1. It is an anti-screen application. Every screen interaction is designed to push the user into the real, physical world within two minutes of opening the app.
-2. It treats the physical world as an open-world exploration game. Every completed real-world experience illuminates territory on a personal Life Map, creating a tangible visual chronicle of a life lived.
-3. It personalizes invitations dynamically based on time availability (15 minutes to 60+ minutes), physical energy level, current mood, budget, real-time outdoor weather, and astronomical solar timing.
-4. It operates without commercial pressure, dark patterns, endless social feeds, or infinite doom-scrolling mechanisms.
+1. Anti-Screen Architecture: Every screen interaction is intentionally designed to push the user into the real, physical world within two minutes of opening the app.
+2. The World as an Open-World Exploration Game: Every completed real-world experience illuminates territory on a personal Life Map, creating a tangible visual chronicle of a life lived.
+3. Adaptive Contextual Personalization: Quests adapt dynamically based on time availability (15 minutes to 60+ minutes), physical energy level, current mood, budget, real-time outdoor weather, and astronomical solar timing.
+4. Non-Commercial and Mindful: Operates without commercial pressure, dark patterns, endless social feeds, or infinite doom-scrolling mechanisms.
 
 ================================================================================
 2. PROBLEM STATEMENT AND PSYCHOLOGICAL FOUNDATIONS
 ================================================================================
 
-The architecture of EXTROVELA is grounded in three core psychological and behavioural frameworks:
+The architectural design of EXTROVELA is grounded in three core psychological and behavioural frameworks:
 
 1. THE PARADOX OF CHOICE AND DECISION FATIGUE
 When individuals finish a workday or weekend morning with unstructured free time, having infinite possible activities causes cognitive friction. Rather than deciding between hundreds of options, people default to high-dopamine, low-effort passive screen consumption. EXTROVELA eliminates decision fatigue by offering exactly one curated "Today's Quest" with three personalized alternatives tailored to the user's immediate state.
@@ -82,7 +86,7 @@ Psychological research in behavioural activation demonstrates that engaging in s
 Routine days blend together in human memory because the brain filters out repetitive stimuli. When someone does something novel—even as simple as getting off a bus at a random stop or watching sunset from an unfamiliar hill—the hippocampus records distinct episodic memory anchors. EXTROVELA captures these anchors through multimodal reflection: verified proof photos, 15-second ambient sound recordings, mood delta scores, and personal reflections.
 
 ================================================================================
-3. THE EXTROVELA CORE EXPERIENCE LOOP
+3. THE EXTROVELA SIX-STAGE EXPERIENCE LOOP
 ================================================================================
 
 The entire application operates around a seamless six-stage cyclical loop:
@@ -115,55 +119,55 @@ STAGE 6: SOCIAL SHARING AND CO-QUEST INVITATION
 The explorer can export a branded 9:16 full-bleed Instagram/TikTok story card or generate a cryptographic invite token to embark on their next adventure with a companion.
 
 ================================================================================
-4. SYSTEM ARCHITECTURE AND HIGH-LEVEL DESIGN
+4. COMPLETE SYSTEM ARCHITECTURE AND DATA TOPOLOGY
 ================================================================================
 
 EXTROVELA utilizes a multi-tiered, decoupled client-server architecture designed for high availability, zero-latency offline operation, and strict user privacy:
 
 ```
-+=============================================================================+
-|                       EXTROVELA MOBILE & WEB CLIENT                         |
-|                                                                             |
-|  +----------------+  +----------------+  +----------------+  +-----------+  |
-|  |   HomeScreen   |  | ExploreScreen  |  |   MapScreen    |  | Memories  |  |
-|  | (Quests/Hero)  |  |  (180+ Quests) |  | (Leaflet World)|  | (Journal) |  |
-|  +--------+-------+  +--------+-------+  +--------+-------+  +-----+-----+  |
-|           |                   |                   |                |        |
-|           +-------------------+---------+---------+----------------+        |
-|                                         |                                   |
-|                                         v                                   |
-|                   GLOBAL REACT CONTEXT ORCHESTRATION LAYER                  |
-|          (AppStateContext, AuthContext, CustomAlertContext)                 |
-|                                         |                                   |
-|                  +----------------------+----------------------+            |
-|                  |                                             |            |
-|                  v                                             v            |
-|        CAPACITOR NATIVE BRIDGE                      OFFLINE-FIRST STORAGE   |
-|     (Camera, GPS, Audio, Haptics)                 (IndexedDB & LocalQueue)  |
-+==================+=============================================+============+
-                   |                                             |
-                   | REST HTTPS API                              | Sync Queue
-                   v                                             v
-+=============================================================================+
-|                       EXTROVELA EXPRESS API GATEWAY                         |
-|                                                                             |
-|  +-----------------------------------------------------------------------+  |
-|  |                            ROUTER LAYER                               |  |
-|  |   /api/quests       /api/memories    /api/stats     /api/intelligence |  |
-|  |   /api/providers    /api/growth      /api/admin     /api/health       |  |
-|  +-----------------------------------------------------------------------+  |
-|         |                            |                          |           |
-|         v                            v                          v           |
-|  costProtection             requireIdentity              requireAdmin       |
-|    Middleware                  Middleware                 Middleware        |
-+=========+============================+==========================+===========+
-          |                            |                          |
-          v                            v                          v
-+===================+        +====================+     +=====================+
-|   MONGODB ATLAS   |        |  FIREBASE SERVICES |     | EXTERNAL PROVIDERS  |
-| (Quests, Stories, |        | (Auth, Storage,    |     | (OpenStreetMap,     |
-|  Users, Analytics)|        |  Performance SDK)  |     |  Open-Meteo API)    |
-+===================+        +====================+     +=====================+
++=============================================================================================================+
+|                                        EXTROVELA MOBILE & WEB CLIENT                                        |
+|                                                                                                             |
+|  +--------------------+  +--------------------+  +--------------------+  +-------------------------------+  |
+|  |     HomeScreen     |  |   ExploreScreen    |  |     MapScreen      |  |        MemoriesScreen         |  |
+|  |  (Featured Quests) |  |  (180+ Real World) |  |   (Leaflet World)  |  | (Journal, Timeline, Audio)  |  |
+|  +---------+----------+  +---------+----------+  +---------+----------+  +---------------+---------------+  |
+|            |                       |                       |                             |                  |
+|            +-----------------------+-----------+-----------+-----------------------------+                  |
+|                                                |                                                            |
+|                                                v                                                            |
+|                           GLOBAL REACT CONTEXT ORCHESTRATION LAYER                                          |
+|                (AppStateContext, AuthContext, CustomAlertContext, ThemeProvider)                            |
+|                                                |                                                            |
+|                        +-----------------------+-----------------------+                                    |
+|                        |                                               |                                    |
+|                        v                                               v                                    |
+|             CAPACITOR NATIVE BRIDGE                         OFFLINE-FIRST STORAGE LAYER                     |
+|         (Camera, GPS, Haptics, Audio)                     (IndexedDB, LocalStorage Queue)                   |
++========================+===============================================+====================================+
+                         |                                               |
+                         | REST HTTPS API                                | Background Sync Queue
+                         v                                               v
++=============================================================================================================+
+|                                    EXTROVELA EXPRESS BACKEND GATEWAY                                        |
+|                                                                                                             |
+|  +-------------------------------------------------------------------------------------------------------+  |
+|  |                                          ROUTER LAYER                                                 |  |
+|  |   /api/quests       /api/memories    /api/stats     /api/intelligence   /api/providers   /api/growth  |  |
+|  +-------------------------------------------------------------------------------------------------------+  |
+|         |                                      |                                       |                    |
+|         v                                      v                                       v                    |
+|  costProtectionMiddleware             requireIdentityMiddleware               requireAdminMiddleware        |
+|  (AI Budget & Rate Limit)             (Identity Verification)                 (Observability Guard)         |
++=========+======================================+=======================================+====================+
+          |                                      |                                       |
+          v                                      v                                       v
++=============================+        +=============================+         +==============================+
+|        MONGODB ATLAS        |        |      FIREBASE SERVICES      |         |      EXTERNAL PROVIDERS      |
+|  • Quests (180+ Catalog)    |        |  • Firebase Authentication  |         |  • OpenStreetMap Nominatim   |
+|  • Memories (Life Stories)  |        |  • Cloud Storage (Photos)   |         |  • Open-Meteo Weather API    |
+|  • User Experience Profiles |        |  • Web Analytics & Perf     |         |  • Web Audio API Synthesizer |
++=============================+        +=============================+         +==============================+
 ```
 
 ================================================================================
@@ -172,35 +176,35 @@ EXTROVELA utilizes a multi-tiered, decoupled client-server architecture designed
 
 ```mermaid
 flowchart TD
-    UserAppLaunch([User Opens EXTROVELA]) --> InitHardware[Initialize Native Shell & Permissions]
+    UserAppLaunch([User Launches EXTROVELA]) --> InitHardware[Initialize Native Shell & Check Permissions]
     
-    subgraph GeoPipeline [1. Global Geolocation & Solar Pipeline]
+    subgraph GeoPipeline [1. Geolocation & Celestial Physics Pipeline]
         InitHardware --> QueryGPS[LocationService.getCurrentLocation]
         QueryGPS --> RunNominatim[OpenStreetMap Nominatim Reverse Geocoding]
         RunNominatim --> CityIdentified[City Resolved: Tokyo / London / New York / Kathmandu]
-        CityIdentified --> ComputeSun[Compute Solar Declination, Noon & Golden Hour]
-        CityIdentified --> FetchMeteo[Fetch Open-Meteo Real-time Weather]
+        CityIdentified --> ComputeSun[Compute Solar Declination, Noon & Golden Hour Window]
+        CityIdentified --> FetchMeteo[Query Open-Meteo Real-time Weather API]
     end
 
-    subgraph IntelligenceCore [2. Contextual Intelligence & Anti-Repetition]
-        ComputeSun & FetchMeteo --> CalcEntropy[Calculate Recent Memory Entropy Score]
-        CalcEntropy --> FilterQuests[Filter 180+ Quest Master Database]
-        FilterQuests --> CheckBackend{Backend AI Service Reachable?}
+    subgraph IntelligenceCore [2. Experience Intelligence & Entropy Engine]
+        ComputeSun & FetchMeteo --> CalcEntropy[Calculate Recent Memory Shannon Entropy]
+        CalcEntropy --> FilterQuests[Filter 180+ Curated Quest Master Repository]
+        FilterQuests --> CheckBackend{Backend AI Gateway Reachable?}
         CheckBackend -- Reachable --> GeminiSynthesis[Gemini 1.5 Pro AI Personalization]
         CheckBackend -- Offline / Timeout --> HeuristicRanking[Local Heuristic Ranking Strategy]
     end
 
     subgraph UIOrchestration [3. Mobile UI Presentation & Interaction]
         GeminiSynthesis & HeuristicRanking --> DisplayHero[Render Featured Quest with Ambient Pulse Aura]
-        DisplayHero --> AcceptQuest[Explorer Accepts Quest]
-        AcceptQuest --> ExecuteExperience[Real-World Immersion Mode]
+        DisplayHero --> AcceptQuest[Explorer Accepts Real-World Quest]
+        AcceptQuest --> ExecuteExperience[Real-World Phone-Free Immersion Mode]
     end
 
-    subgraph CaptureAndSync [4. Completion, Proof & Life Journaling]
+    subgraph CaptureAndSync [4. Completion, Multimodal Proof & Cloud Sync]
         ExecuteExperience --> LaunchCapture[Open Capture Modal with Emil Kowalski Spring]
         LaunchCapture --> TakePhoto[Native Camera Proof Verification]
         LaunchCapture --> RecordAudio[15-Second Ambient Acoustic Recording]
-        LaunchCapture --> WriteJournal[Log Mood, Reflections & Star Ratings]
+        LaunchCapture --> WriteJournal[Log Mood Score, Reflections & Star Ratings]
         TakePhoto & RecordAudio & WriteJournal --> CommitLocal[Persist Instantly to Local Storage]
         CommitLocal --> DropPin[Drop Glowing Discovery Pin on Leaflet Life Map]
         CommitLocal --> SyncCloud[Asynchronously Dispatch to Cloud Gateway]
@@ -233,197 +237,154 @@ sequenceDiagram
     Server-->>Client: Shared Life Experience Badge Unlocked!
 ```
 
-================================================================================
-6. ARCHITECTURAL DECISIONS, TRADE-OFFS, AND RATIONALE
-================================================================================
+```mermaid
+stateDiagram-v2
+    [*] --> Idle : User Opens App
+    Idle --> SelectingConstraints : Tap Filter or Wheel
+    SelectingConstraints --> QuestGenerated : Context Computed
+    QuestGenerated --> QuestActive : Tap "Start Experience"
+    
+    state QuestActive {
+        [*] --> TimerRunning
+        TimerRunning --> AmbientAudioActive : Open Soundscapes
+        AmbientAudioActive --> TimerRunning : Close Drawer
+        TimerRunning --> ProofCapture : Tap "Complete Quest"
+    }
 
-This section details the critical technical decisions across the EXTROVELA platform, answering WHY each technology was chosen, HOW it works, WHEN it is triggered, WHY NOT the common alternatives, and WHAT TO DO INSTEAD during edge case failures.
-
---------------------------------------------------------------------------------
-DECISION 1: PURE VANILLA CSS TOKENS INSTEAD OF TAILWIND CSS
---------------------------------------------------------------------------------
-• WHAT: A centralized CSS Custom Properties design system in `src/styles/index.css` defining spatial scales, colors, glassmorphism filters, and hardware-accelerated spring curves.
-• HOW: Native CSS variables (`--color-surface`, `--color-accent`, `--ease-spring`) compiled directly by browser rendering engines without build-step overhead.
-• WHEN: Applied universally across all screens, modals, badges, cards, and typography.
-• WHY CHOSEN: Guarantees 100% granular control over Emil Kowalski spring easing physics, zero runtime overhead, instant style hot-reloading, and consistent dark-mode tokens without generating massive utility class bloat.
-• WHY NOT TAILWIND CSS: Tailwind creates class string clutter (`className="flex flex-col items-center justify-between p-4 bg-zinc-900/80 backdrop-blur border..."`), complicates custom cubic-bezier spring curves with arbitrary values, and couples component structure tightly to framework-specific utility conventions.
-• WHAT TO DO INSTEAD: If scoped component styles are required in future extensions, CSS Modules can be used alongside the existing global token hierarchy.
-
---------------------------------------------------------------------------------
-DECISION 2: CAPACITOR NATIVE BRIDGE INSTEAD OF REACT NATIVE OR FLUTTER
---------------------------------------------------------------------------------
-• WHAT: Capacitor 6.0 wrapping a unified Vite + React 18 single-page application into native iOS Xcode and Android Gradle binaries.
-• HOW: Exposes hardware primitives (Camera, GPS Geolocation, Tactile Haptics, Local Notifications) through asynchronous JavaScript-to-native message bridges.
-• WHEN: Invoked whenever media capture, haptics, geolocation, or push notifications are executed.
-• WHY CHOSEN: Allows 100% code reuse across Web, iOS, and Android. Eliminates double-codebase maintenance, enables instant web previews during development, and provides access to standard Web APIs (Web Audio API, Canvas 2D) that are cumbersome in React Native.
-• WHY NOT REACT NATIVE: React Native requires bridge-specific native UI components, complicates Canvas 2D rendering for 9:16 story cards, and creates ongoing maintenance overhead with bridge deprecations.
-• WHY NOT FLUTTER: Flutter requires switching languages from TypeScript to Dart, duplicates business logic, and lacks seamless Web Audio DSP synthesizer support.
-• WHAT TO DO INSTEAD: If a device runs in a standard mobile browser where Capacitor native plugins are absent, all hardware calls fall back gracefully to standard Web APIs (`navigator.geolocation`, `MediaRecorder`, `navigator.share`).
-
---------------------------------------------------------------------------------
-DECISION 3: OPENSTREETMAP NOMINATIM INSTEAD OF GOOGLE MAPS GEOCODING API
---------------------------------------------------------------------------------
-• WHAT: Free, open-access reverse geocoding resolving GPS latitude/longitude into human-readable city and municipal district names.
-• HOW: HTTP GET request with an English language header dispatched to `https://nominatim.openstreetmap.org/reverse?format=json&lat={lat}&lon={lng}`.
-• WHEN: Triggered once on initial app mount and whenever location permissions are granted.
-• WHY CHOSEN: Eliminates expensive per-request API billing, requires zero API key leakage in mobile bundles, and provides robust global coverage across thousands of cities worldwide.
-• WHY NOT GOOGLE MAPS GEOCODING API: Google Maps Geocoding costs $5.00 per 1,000 requests, requires mandatory credit card billing, enforces restrictive quota caps, and exposes private billing keys to client tampering.
-• WHAT TO DO INSTEAD: If Nominatim encounters network timeout (e.g. strict rate limit), the app falls back to local timezone offset coordinate estimation or cached municipal profiles.
-
---------------------------------------------------------------------------------
-DECISION 4: WEB AUDIO PROCEDURAL SYNTHESIS INSTEAD OF HOSTED MP3 AUDIO FILES
---------------------------------------------------------------------------------
-• WHAT: Real-time mathematical acoustic sound generation for continuous nature ambiance (Summer Rain, Ocean Shore, Forest Birds, Highland Wind).
-• HOW: Web Audio API `AudioContext` generating white and pink noise buffers filtered through 2nd-order recursive Biquad filters and modulated by low-frequency oscillators.
-• WHEN: Activated on demand when an explorer opens the Soundscape Drawer during a quest.
-• WHY CHOSEN: Zero network bandwidth consumption (0 MB downloaded), instant playback with zero buffering latency, infinite non-repeating acoustic variation, and complete offline capability.
-• WHY NOT HOSTED MP3 FILES: MP3 audio loops require downloading 15–50 MB of audio files, introduce audible looping seams, waste mobile cellular data, and fail entirely in offline environments.
-• WHAT TO DO INSTEAD: If the browser's Web Audio API is muted or disabled by power-saving modes, the app renders visual pulsing ambient aura animations to provide calming feedback.
-
---------------------------------------------------------------------------------
-DECISION 5: LOCAL-FIRST SYNCHRONIZATION QUEUE INSTEAD OF ALWAYS-ONLINE REST
---------------------------------------------------------------------------------
-• WHAT: Resilient offline storage layer writing memories and reflections to local `localStorage` and `IndexedDB` immediately, followed by asynchronous background cloud synchronization.
-• HOW: Memory records are saved with client-generated UUIDs, committed to local state instantly, and appended to an offline dispatch queue with exponential retry backoff.
-• WHEN: Triggered on every quest completion, photo snap, and reflection submission.
-• WHY CHOSEN: Real-world experiences often occur in areas with poor cellular reception (hilltops, basements, remote parks, underground transit). Explorers must never lose a memory or photo due to spotty network connectivity.
-• WHY NOT ALWAYS-ONLINE REST: Standard REST architectures block the user interface with loading spinners, fail abruptly on HTTP timeout, and discard memories if the network drops before completion.
-• WHAT TO DO INSTEAD: When the client detects an active internet connection via `window.addEventListener('online')`, the queue drains automatically to `/api/memories/sync`.
-
---------------------------------------------------------------------------------
-DECISION 6: CRYPTOGRAPHIC HMAC-SHA256 INVITES INSTEAD OF CENTRALIZED SESSIONS
---------------------------------------------------------------------------------
-• WHAT: Self-contained, tamper-proof co-quest invite URLs containing cryptographically signed payloads.
-• HOW: A Base64Url header and payload signed with server-side HMAC-SHA256. The recipient's client validates the signature and resolves quest parameters directly from the token.
-• WHEN: Generated when an explorer taps "Invite Companion" on any quest card.
-• WHY CHOSEN: Allows instant peer-to-peer sharing via WhatsApp, SMS, or Telegram without requiring database writes prior to invitation, and permits non-registered recipients to preview the quest immediately.
-• WHY NOT CENTRAL DATABASE INVITE ROWS: Database-dependent invite tables accumulate stale orphaned rows from unaccepted links, create unnecessary database write loads, and require recipient authentication before viewing.
-• WHAT TO DO INSTEAD: If a token expires after its 24-hour validity window, the recipient is presented with a fresh candidate quest from the same category with an option to request a new invite.
-
-================================================================================
-7. REPOSITORY FILE CATALOG AND DIRECTORY TREE
-================================================================================
-
-```
-Extrovela/
-├── android/                         Capacitor native Android project and Gradle build files
-├── ios/                             Capacitor native iOS project and Xcode workspace
-├── docs/                            Comprehensive architectural specifications and audits
-│   ├── ARCHITECTURE.md              Technical architecture and engineering guidelines
-│   ├── BACKEND.md                   Express.js backend gateway and MongoDB schemas
-│   ├── COST_CONTROL.md              AI token budgets and rate-limiting policies
-│   ├── ENVIRONMENT.md               Environment variables and runtime configuration
-│   ├── FIREBASE_SETUP.md            Firebase Auth, Storage, and Analytics setup
-│   ├── FIRESTORE_SCHEMA.md          Cloud Firestore collection schema definitions
-│   ├── MASTER_INTEGRATION_AUDIT.md  21-area architectural audit and verification matrix
-│   ├── PHASE_11_REPORT.md           Experience Intelligence and AI personalization
-│   ├── PHASE_12_REPORT.md           Growth loops, invite tokens, and co-quests
-│   └── SECURITY.md                  Security policies, location privacy, and defenses
-├── public/                          Static assets, brand emblems, and web manifest
-│   ├── logo-light.png               Light mode high-resolution brand logo
-│   ├── logo-dark.png                Dark mode high-contrast brand emblem
-│   └── favicon.ico                  Application icon
-├── server/                          Node.js & Express API Gateway
-│   ├── middleware/
-│   │   ├── costProtection.js        AI rate-limiting and cost safety middleware
-│   │   ├── requireAdmin.js          Administrative authorization guard
-│   │   └── requireIdentity.js       Client identity verification guard
-│   ├── models/
-│   │   ├── Memory.js                Mongoose model for completed experience stories
-│   │   ├── Quest.js                 Mongoose model for curated quest definitions
-│   │   └── User.js                  Mongoose model for user accounts and statistics
-│   ├── routes/
-│   │   ├── admin.js                 Administrative metrics and control endpoints
-│   │   ├── api.js                   Core quest, memory, and stats API routes
-│   │   ├── growth.js                Cryptographic invite and co-quest routes
-│   │   ├── intelligence.js          AI quest generation proxy routes
-│   │   └── providers.js             Weather and reverse-geocoding provider routes
-│   ├── server.js                    Express application bootstrap and CORS allowlist
-│   └── .env.example                 Template for server environment variables
-├── src/                             React 18 Frontend Application
-│   ├── components/                  Reusable UI components and views
-│   │   ├── primitives/              Atomic design tokens (Button, Card, Badge, Modal, Text)
-│   │   ├── screens/                 Primary application screens
-│   │   │   ├── HomeScreen.tsx       Dynamic greeting, featured quest, quick escapes
-│   │   │   ├── ExploreScreen.tsx    Categorized directory of 180+ curated quests
-│   │   │   ├── MapScreen.tsx        Interactive Leaflet exploration world and pins
-│   │   │   ├── MemoriesScreen.tsx   Journal timeline, smart recaps, and collections
-│   │   │   └── ProfileScreen.tsx    User statistics, account linking, cache, deletion
-│   │   ├── AdminMetricsModal.tsx    Real-time platform observability dialog
-│   │   ├── CaptureModal.tsx         Camera proof, audio note, and reflection form
-│   │   ├── Navbar.tsx               Spring-animated navigation bar with active dot
-│   │   ├── QuestSpinnerModal.tsx    Physics-driven "I'm Bored" quick action wheel
-│   │   ├── ShareStoryModal.tsx      9:16 Canvas story card generator for TikTok/IG
-│   │   ├── SoundscapeDrawer.tsx     Web Audio procedural nature ambiance synthesizer
-│   │   └── VoiceRecorder.tsx        15-second ambient acoustic recording component
-│   ├── config/                      Runtime configuration and feature toggles
-│   ├── constants/                   Mock data, quest database, and design constants
-│   ├── context/                     React Context state orchestration
-│   │   ├── AppStateContext.tsx      Global state, GPS resolver, quest persistence
-│   │   ├── AuthContext.tsx          Local session state and Firebase Authentication
-│   │   └── CustomAlertContext.tsx   Glassmorphic alert, confirm, and toast system
-│   ├── features/                    Domain-sliced modular feature packages
-│   ├── lib/                         Core computational and native utilities
-│   │   ├── ai-quest-engine.ts       Astronomical solar calculations and AI synthesis
-│   │   ├── api.ts                   Sanitized HTTP client for backend gateway
-│   │   └── native-device.ts         Capacitor camera, geolocation, and haptic bridge
-│   ├── quest-engine/                Quest scoring, ranking, and candidate generation
-│   ├── services/                    Service layer integrations
-│   │   ├── context/                 LocationService and OpenStreetMap geocoder
-│   │   ├── firebase/                Firebase SDK configuration and performance telemetry
-│   │   └── intelligence/            Anti-repetition and experience diversity engines
-│   ├── styles/
-│   │   └── index.css                Pure Vanilla CSS design system and spring tokens
-│   ├── types/                       TypeScript domain type contracts
-│   └── utils/                       Error handlers, haptic triggers, privacy loggers
-├── capacitor.config.json            Native Capacitor configuration
-├── firestore.rules                  Cloud Firestore declarative security rules
-├── storage.rules                    Firebase Cloud Storage access control rules
-└── vite.config.ts                   Vite bundler configuration
+    QuestActive --> MemoryLogged : Photo + Audio + Reflection Submitted
+    MemoryLogged --> LifeMapUpdated : Discovery Pin Placed
+    LifeMapUpdated --> StoryShared : Export 9:16 Canvas Card
+    StoryShared --> Idle : Return to Home
 ```
 
 ================================================================================
-8. FEATURE ENCYCLOPEDIA AND CAPABILITIES
+6. ARCHITECTURAL DECISIONS AND TRADE-OFF RATIONALE
 ================================================================================
 
-1. TODAY'S CURATED FEATURED QUEST
-Every morning at 06:00 local time, EXTROVELA calculates the optimal quest for the user based on day of the week, local weather forecast, time availability, and past history. The featured card glows with an ambient breathing aura and displays time and budget tags.
+--------------------------------------------------------------------------------
+ADR 1: PURE VANILLA CSS DESIGN TOKENS INSTEAD OF TAILWIND CSS
+--------------------------------------------------------------------------------
+1. WHAT: A centralized CSS Custom Properties design system in `src/styles/index.css` defining spatial scales, colors, glassmorphism filters, and hardware-accelerated spring curves.
+2. HOW: Native CSS variables (`--color-surface`, `--color-accent`, `--ease-spring`) compiled directly by browser rendering engines without build-step overhead.
+3. WHEN: Applied universally across all screens, modals, badges, cards, and typography.
+4. WHY CHOSEN: Guarantees 100% granular control over Emil Kowalski spring easing physics, zero runtime overhead, instant style hot-reloading, and consistent dark-mode tokens without generating massive utility class bloat.
+5. WHY NOT TAILWIND CSS: Tailwind creates class string clutter, complicates custom cubic-bezier spring curves with arbitrary values, and couples component structure tightly to framework-specific utility conventions.
+6. WHAT TO DO INSTEAD: If scoped component styles are required in future extensions, CSS Modules can be used alongside the existing global token hierarchy.
 
-2. EXPLORE DIRECTORY (180+ REAL-WORLD EXPERIENCES)
-A searchable, categorized catalog spanning five core life dimensions:
-• Explore: Neighborhood discovery, hidden alleys, architectural observation, new transit lines.
-• Nature: Cloud watching, botanical garden visits, hilltop vistas, star viewing, park walks.
-• Create: Sketching physical scenes, writing letters to future self, photography challenges.
-• Connect: Authentic compliment exchanges, striking conversations with baristas, shared tea.
-• Reflect: Journaling in quiet sanctuaries, phone-free coffee meditation, cemetery history walks.
+--------------------------------------------------------------------------------
+ADR 2: CAPACITOR 6.0 NATIVE BRIDGE INSTEAD OF REACT NATIVE OR FLUTTER
+--------------------------------------------------------------------------------
+1. WHAT: Capacitor 6.0 wrapping a unified Vite + React 18 single-page application into native iOS Xcode and Android Gradle binaries.
+2. HOW: Exposes hardware primitives (Camera, GPS Geolocation, Tactile Haptics, Local Notifications) through asynchronous JavaScript-to-native message bridges.
+3. WHEN: Invoked whenever media capture, haptics, geolocation, or push notifications are executed.
+4. WHY CHOSEN: Allows 100% code reuse across Web, iOS, and Android. Eliminates double-codebase maintenance, enables instant web previews during development, and provides access to standard Web APIs (Web Audio API, Canvas 2D) that are cumbersome in React Native.
+5. WHY NOT REACT NATIVE: React Native requires bridge-specific native UI components, complicates Canvas 2D rendering for 9:16 story cards, and creates ongoing maintenance overhead with bridge deprecations.
+6. WHY NOT FLUTTER: Flutter requires switching languages from TypeScript to Dart, duplicates business logic, and lacks seamless Web Audio DSP synthesizer support.
+7. WHAT TO DO INSTEAD: If a device runs in a standard mobile browser where Capacitor native plugins are absent, all hardware calls fall back gracefully to standard Web APIs (`navigator.geolocation`, `MediaRecorder`, `navigator.share`).
 
-3. "I'M BORED" MICRO-ADVENTURE SPINNER WHEEL
-When an explorer has only 15–20 minutes and zero energy for planning, tapping the Small Escape card opens a canvas-rendered spinning wheel that randomly awards an instant, achievable micro-quest.
+--------------------------------------------------------------------------------
+ADR 3: OPENSTREETMAP NOMINATIM INSTEAD OF GOOGLE MAPS GEOCODING API
+--------------------------------------------------------------------------------
+1. WHAT: Free, open-access reverse geocoding resolving GPS latitude/longitude into human-readable city and municipal district names.
+2. HOW: HTTP GET request with an English language header dispatched to `https://nominatim.openstreetmap.org/reverse?format=json&lat={lat}&lon={lng}`.
+3. WHEN: Triggered once on initial app mount and whenever location permissions are granted.
+4. WHY CHOSEN: Eliminates expensive per-request API billing, requires zero API key leakage in mobile bundles, and provides robust global coverage across thousands of cities worldwide.
+5. WHY NOT GOOGLE MAPS GEOCODING API: Google Maps Geocoding costs $5.00 per 1,000 requests, requires mandatory credit card billing, enforces restrictive quota caps, and exposes private billing keys to client tampering.
+6. WHAT TO DO INSTEAD: If Nominatim encounters network timeout (e.g. strict rate limit), the app falls back to local timezone offset coordinate estimation or cached municipal profiles.
 
-4. PROCEDURAL AMBIENT NATURE SOUNDSCAPES
-An integrated Web Audio synthesizer provides background ambiance during quest execution:
-• Summer Rain: Soft droplet impacts and low-frequency rumble.
-• Forest Canopy: High-frequency randomized birdsong pings and gentle rustling.
-• Ocean Shore: Low-frequency oscillator wave swells.
-• Highland Wind: Bandpass swept filtered noise.
+--------------------------------------------------------------------------------
+ADR 4: WEB AUDIO PROCEDURAL SYNTHESIS INSTEAD OF HOSTED MP3 AUDIO FILES
+--------------------------------------------------------------------------------
+1. WHAT: Real-time mathematical acoustic sound generation for continuous nature ambiance (Summer Rain, Ocean Shore, Forest Birds, Highland Wind).
+2. HOW: Web Audio API `AudioContext` generating white and pink noise buffers filtered through 2nd-order recursive Biquad filters and modulated by low-frequency oscillators.
+3. WHEN: Activated on demand when an explorer opens the Soundscape Drawer during a quest.
+4. WHY CHOSEN: Zero network bandwidth consumption (0 MB downloaded), instant playback with zero buffering latency, infinite non-repeating acoustic variation, and complete offline capability.
+5. WHY NOT HOSTED MP3 FILES: MP3 audio loops require downloading 15–50 MB of audio files, introduce audible looping seams, waste mobile cellular data, and fail entirely in offline environments.
+6. WHAT TO DO INSTEAD: If the browser's Web Audio API is muted or disabled by power-saving modes, the app renders visual pulsing ambient aura animations to provide calming feedback.
 
-5. 15-SECOND AMBIENT VOICE RECORDER
-Alongside camera photos, users can record a 15-second acoustic snapshot of their surroundings using native MediaRecorder APIs, capturing church bells, rain on rooftops, river rapids, or bustling coffeehouse murmurs.
+--------------------------------------------------------------------------------
+ADR 5: LOCAL-FIRST SYNCHRONIZATION QUEUE INSTEAD OF ALWAYS-ONLINE REST
+--------------------------------------------------------------------------------
+1. WHAT: Resilient offline storage layer writing memories and reflections to local `localStorage` and `IndexedDB` immediately, followed by asynchronous background cloud synchronization.
+2. HOW: Memory records are saved with client-generated UUIDs, committed to local state instantly, and appended to an offline dispatch queue with exponential retry backoff.
+3. WHEN: Triggered on every quest completion, photo snap, and reflection submission.
+4. WHY CHOSEN: Real-world experiences often occur in areas with poor cellular reception (hilltops, basements, remote parks, underground transit). Explorers must never lose a memory or photo due to spotty network connectivity.
+5. WHY NOT ALWAYS-ONLINE REST: Standard REST architectures block the user interface with loading spinners, fail abruptly on HTTP timeout, and discard memories if the network drops before completion.
+6. WHAT TO DO INSTEAD: When the client detects an active internet connection via `window.addEventListener('online')`, the queue drains automatically to `/api/memories/sync`.
 
-6. 9:16 SOCIAL STORY CANVAS EXPORTER
-Completed quests can be transformed into full-bleed 1080x1920 Instagram Stories or TikTok posts with high-contrast typography, location stamps, quotes, and gradient overlays with one-tap Web Share API support.
+--------------------------------------------------------------------------------
+ADR 6: CRYPTOGRAPHIC HMAC-SHA256 INVITES INSTEAD OF CENTRALIZED SESSIONS
+--------------------------------------------------------------------------------
+1. WHAT: Self-contained, tamper-proof co-quest invite URLs containing cryptographically signed payloads.
+2. HOW: A Base64Url header and payload signed with server-side HMAC-SHA256. The recipient's client validates the signature and resolves quest parameters directly from the token.
+3. WHEN: Generated when an explorer taps "Invite Companion" on any quest card.
+4. WHY CHOSEN: Allows instant peer-to-peer sharing via WhatsApp, SMS, or Telegram without requiring database writes prior to invitation, and permits non-registered recipients to preview the quest immediately.
+5. WHY NOT CENTRAL DATABASE INVITE ROWS: Database-dependent invite tables accumulate stale orphaned rows from unaccepted links, create unnecessary database write loads, and require recipient authentication before viewing.
+6. WHAT TO DO INSTEAD: If a token expires after its 24-hour validity window, the recipient is presented with a fresh candidate quest from the same category with an option to request a new invite.
 
-7. INTERACTIVE LEAFLET LIFE MAP
-Every completed experience places an illuminated memory pin on the explorer's world map. Unexplored city districts are veiled in atmospheric fog that dissolves as the user visits new coordinates.
+================================================================================
+7. COMPREHENSIVE COMPONENT CATALOG AND DIRECTORY MAP
+================================================================================
 
-8. ANTI-REPETITION AND RECOVERY ENGINE
-If an explorer completes multiple consecutive indoor or solitary quests, the system calculates category entropy and automatically nudges the user toward an outdoor sunset walk or social challenge.
+```
+src/
+├── components/
+│   ├── primitives/
+│   │   ├── Badge.tsx           Glassmorphic status badge with mono typography
+│   │   ├── Button.tsx          Spring-animated tactile button with haptic triggers
+│   │   ├── Card.tsx            Glassmorphic elevated surface with glow auras
+│   │   ├── Chip.tsx            Selectable filter chip with spring compression
+│   │   ├── Input.tsx           Accessible form input with focus ring transition
+│   │   ├── Modal.tsx           Bottom-sheet and centered dialog with spring physics
+│   │   ├── QuestCard.tsx       Featured and list quest card with ambient aura
+│   │   ├── SectionHeader.tsx   Section title with subtitle and action button
+│   │   └── Typography.tsx      Display, heading, and body typography variants
+│   ├── screens/
+│   │   ├── HomeScreen.tsx      Time greeting, featured quest, quick escapes, world preview
+│   │   ├── ExploreScreen.tsx   Searchable 180+ quest directory with category tabs
+│   │   ├── MapScreen.tsx       Interactive Leaflet life map with discovery pins
+│   │   ├── MemoriesScreen.tsx  Memory timeline, calendar view, recaps, collections
+│   │   └── ProfileScreen.tsx   Exploration stats, account security, data management
+│   ├── AdminMetricsModal.tsx   Live platform telemetry and MongoDB connectivity
+│   ├── CaptureModal.tsx        Camera proof verification and reflection logging
+│   ├── Navbar.tsx              Desktop and mobile bottom navigation with spring pop
+│   ├── QuestSpinnerModal.tsx   Physics-driven canvas spinning wheel for micro-escapes
+│   ├── ShareStoryModal.tsx     1080x1920 HTML5 Canvas Instagram/TikTok story card
+│   ├── SoundscapeDrawer.tsx    Web Audio procedural nature sound synthesizer
+│   └── VoiceRecorder.tsx       15-second acoustic ambient environmental recorder
+├── context/
+│   ├── AppStateContext.tsx     Global app state, GPS city resolver, quest registry
+│   ├── AuthContext.tsx         Local session state and Firebase Authentication
+│   └── CustomAlertContext.tsx  Glassmorphic alert, confirm, and toast provider
+├── lib/
+│   ├── ai-quest-engine.ts      Astronomical solar calculations and AI synthesis
+│   ├── api.ts                  Sanitized REST client for backend gateway
+│   └── native-device.ts        Capacitor camera, geolocation, and haptics bridge
+├── services/
+│   ├── context/
+│   │   └── locationService.ts  GPS resolver and OpenStreetMap Nominatim geocoder
+│   ├── firebase/
+│   │   ├── firebaseAuth.ts     Google Sign-In and anonymous authentication
+│   │   └── firebaseStorage.ts  Cloud Storage photo proof upload pipeline
+│   └── intelligence/
+│       └── diversityEngine.ts  Shannon category entropy anti-repetition engine
+└── styles/
+    └── index.css               Pure Vanilla CSS design tokens and spring animations
+```
 
-9. CRYPTOGRAPHIC CO-QUEST INVITES
-Users can invite friends or meet companions by sharing a secure HMAC-SHA256 signed URL. Both participants receive synchronized progress updates and dual-completion badges.
+================================================================================
+8. MASTER QUEST TAXONOMY AND ONTOLOGY (180+ REAL EXPERIENCES)
+================================================================================
 
-10. GLASSMORPHIC ALERT AND TOAST SYSTEM
-Zero native browser alert popups. All confirmations, warnings, and toasts render through an animated, haptic-enabled custom dialog system.
+EXTROVELA includes 180+ curated, non-commercial real-world quests classified into five core life dimensions:
+
+| Dimension | Core Mission | Sample Experiences | Average Duration | Environment |
+|---|---|---|:---:|:---:|
+| **EXPLORE** | Break geographical routine & observe architecture | Alleyway Wanderer, Top-Floor Viewfinder, Random Bus Ride, Bridge Crossing | 30–60 min | Outdoor |
+| **NATURE** | Reconnect with natural rhythms & sky | 15-Minute Cloud Watching, Sunset Hilltop Vista, Creek Meditation, Tree Canopy Gaze | 15–45 min | Outdoor |
+| **CREATE** | Multimodal physical & sensory expression | 5-Minute Pen Sketch, Letter to Future Self, 3-Color Photo Challenge, Texture Hunting | 20–40 min | Any |
+| **CONNECT** | Authentic micro-interactions with humans | Genuine Barista Compliment, Tea with an Elder, Local Artisan Chat, Silent Shared Walk | 15–30 min | Indoor/Outdoor |
+| **REFLECT** | Mental stillness & contemplative presence | Phone-Free Coffee Ritual, Sanctuary Silence, Cemetery History Walk, Rain Observation | 20–45 min | Indoor/Outdoor |
 
 ================================================================================
 9. MATHEMATICAL FOUNDATIONS & ALGORITHMIC ARCHITECTURE
@@ -435,11 +396,11 @@ EXTROVELA is built upon seven rigorous mathematical and algorithmic frameworks t
 DOMAIN 1: ASTRONOMICAL SOLAR POSITIONING AND CELESTIAL MECHANICS
 --------------------------------------------------------------------------------
 
-WHAT:
+1. WHAT:
 A zero-dependency celestial calculation engine that computes exact local solar noon, astronomical sunrise, sunset, and golden hour windows for any geographic coordinate on Earth.
 
-HOW:
-1. Solar Declination ($\delta$):
+2. HOW:
+• Solar Declination ($\delta$):
 The tilt angle of the Earth relative to the Sun on day $n$ of the year (where $n \in [1, 365]$) is calculated using Spencer's solar declination formula:
 
 $$\delta = 23.45^\circ \cdot \sin\left(\frac{284 + n}{365} \cdot 360^\circ\right)$$
@@ -448,7 +409,7 @@ In radians:
 
 $$\delta_{\text{rad}} = \delta \cdot \frac{\pi}{180}$$
 
-2. Sunset Hour Angle ($\omega$):
+• Sunset Hour Angle ($\omega$):
 The angular distance the Earth must rotate from solar noon to sunset for latitude $\phi$ is given by:
 
 $$\omega = \arccos\left(-\tan(\phi_{\text{rad}}) \cdot \tan(\delta_{\text{rad}})\right)$$
@@ -457,7 +418,7 @@ Converting $\omega$ from radians to degrees:
 
 $$\omega_{\text{deg}} = \omega \cdot \frac{180}{\pi}$$
 
-3. Solar Noon and Sunset Hours:
+• Solar Noon and Sunset Hours:
 Using the explorer's longitude $\lambda$ and local timezone offset in minutes $T_{\text{offset}}$:
 
 $$\text{Solar Noon (Hours)} = 12.0 - \frac{\lambda}{15^\circ} + \frac{T_{\text{offset}}}{60}$$
@@ -466,100 +427,100 @@ $$\text{Sunset Hour} = \text{Solar Noon} + \frac{\omega_{\text{deg}}}{15^\circ}$
 
 $$\text{Golden Hour Start} = \text{Sunset Hour} - 0.75 \text{ (45 minutes prior)}$$
 
-WHEN:
+3. WHEN:
 Evaluated on app initialization and whenever quest generation is triggered.
 
-WHY:
+4. WHY:
 Enables the app to identify the exact 45-minute window before sunset in any city on Earth without making costly third-party API calls, allowing the engine to promote golden-hour viewpoints precisely when the physical sky is visually breathtaking.
 
 --------------------------------------------------------------------------------
 DOMAIN 2: INFORMATION THEORY, SHANNON ENTROPY, AND ANTI-REPETITION
 --------------------------------------------------------------------------------
 
-WHAT:
+1. WHAT:
 A statistical diversity monitoring system that measures the predictability and category concentration of the user's recent experiences.
 
-HOW:
+2. HOW:
 Given a sliding window of the user's last $N$ completed memories ($N=10$) across $K$ discrete categories (Explore, Nature, Create, Connect, Reflect):
 
-1. Category Probability Mass Function:
+• Category Probability Mass Function:
 
 $$P(c_i) = \frac{\text{Count of quests in category } c_i}{N}, \quad \sum_{i=1}^{K} P(c_i) = 1$$
 
-2. Shannon Category Entropy $H(X)$:
+• Shannon Category Entropy $H(X)$:
 
 $$H(X) = -\sum_{i=1}^{K} P(c_i) \log_2 P(c_i)$$
 
-3. Entropy Normalization:
+• Entropy Normalization:
 Maximal entropy occurs under a uniform distribution where $H_{\max} = \log_2(K) = \log_2(5) \approx 2.322 \text{ bits}$. The normalized diversity score is:
 
 $$D = \frac{H(X)}{H_{\max}} \in [0, 1]$$
 
-4. Dynamic Category Weight Penalty:
+• Dynamic Category Weight Penalty:
 If category $c_i$ exceeds a threshold $P(c_i) \ge 0.40$ (or if $H(X) < 1.25 \text{ bits}$), the candidate generation weight $W(c_i)$ for the dominant category is depressed while under-represented categories $c_j$ receive a diversity boost:
 
 $$W(c_i) = W_0 \cdot \exp\left(-2.5 \cdot P(c_i)\right)$$
 
 $$W(c_j) = W_0 \cdot \left(1.0 + \frac{1.0}{P(c_j) + 0.05}\right)$$
 
-WHEN:
+3. WHEN:
 Calculated prior to quest candidate filtering whenever Today's Quest or personalized recommendations are generated.
 
-WHY:
+4. WHY:
 Prevents behavioral fatigue and routine stagnation. If a user naturally defaults to quiet cafe visits 5 days in a row, the entropy engine detects the monotony and actively nudges them toward a refreshing outdoor hike or creative observation quest.
 
 --------------------------------------------------------------------------------
 DOMAIN 3: GEOSPATIAL HAVERSINE AND GEODESIC SPHERICAL DISTANCE
 --------------------------------------------------------------------------------
 
-WHAT:
+1. WHAT:
 Great-circle distance computation between the user's current GPS position and discovery pins or landmark nodes across the spherical surface of Earth.
 
-HOW:
+2. HOW:
 For user coordinates $(\phi_1, \lambda_1)$ and target coordinate $(\phi_2, \lambda_2)$ in radians:
 
 $$\Delta\phi = \phi_2 - \phi_1, \quad \Delta\lambda = \lambda_2 - \lambda_1$$
 
-1. Haversine Square Half-Chord:
+• Haversine Square Half-Chord:
 
 $$a = \sin^2\left(\frac{\Delta\phi}{2}\right) + \cos(\phi_1) \cdot \cos(\phi_2) \cdot \sin^2\left(\frac{\Delta\lambda}{2}\right)$$
 
-2. Angular Distance in Radians:
+• Angular Distance in Radians:
 
 $$c = 2 \cdot \operatorname{atan2}\left(\sqrt{a}, \sqrt{1 - a}\right)$$
 
-3. Surface Distance in Kilometers (Mean Earth radius $R = 6371.0 \text{ km}$):
+• Surface Distance in Kilometers (Mean Earth radius $R = 6371.0 \text{ km}$):
 
 $$d = R \cdot c$$
 
-4. Proximity Radius Unlock Condition:
+• Proximity Radius Unlock Condition:
 A discovery landmark or co-quest pin is unlocked if:
 
 $$d \le 0.150 \text{ km (150 meters)}$$
 
-WHEN:
+3. WHEN:
 Evaluated on map panning, proximity alerts, and when sorting nearby quests by walking distance.
 
-WHY:
+4. WHY:
 Accurately measures physical proximity on a spherical geoid without planar projection distortions, ensuring reliable discovery node unlocks and realistic walking duration estimates.
 
 --------------------------------------------------------------------------------
 DOMAIN 4: DIGITAL SIGNAL PROCESSING AND PROCEDURAL ACOUSTIC SYNTHESIS
 --------------------------------------------------------------------------------
 
-WHAT:
+1. WHAT:
 In-memory mathematical synthesis of continuous nature soundscapes (Rain, Ocean, Birds, Wind) via the Web Audio API without loading external audio assets.
 
-HOW:
-1. White Noise Generation:
+2. HOW:
+• White Noise Generation:
 Uniform random sampling over interval $[-1.0, 1.0]$:
 
 $$x[n] \sim U(-1.0, 1.0)$$
 
-2. Pink Noise Voss-McCartney Filter ($1/f$ Spectral Density):
+• Pink Noise Voss-McCartney Filter ($1/f$ Spectral Density):
 Iterative summation of octave-decimated white noise generators producing a $-3\text{ dB/octave}$ power spectral density roll-off.
 
-3. Second-Order Biquad Difference Equations:
+• Second-Order Biquad Difference Equations:
 Filtering audio buffers through lowpass and bandpass nodes using recursive difference equations:
 
 $$y[n] = b_0 x[n] + b_1 x[n-1] + b_2 x[n-2] - a_1 y[n-1] - a_2 y[n-2]$$
@@ -572,62 +533,62 @@ $$b_0 = \frac{1 - \cos(\omega_0)}{2}, \quad b_1 = 1 - \cos(\omega_0), \quad b_2 
 
 $$a_0 = 1 + \alpha, \quad a_1 = -2\cos(\omega_0), \quad a_2 = 1 - \alpha$$
 
-4. Ocean Swell Low-Frequency Oscillator (LFO):
+• Ocean Swell Low-Frequency Oscillator (LFO):
 A sinusoidal gain multiplier running at frequency $f = 0.08\text{ Hz}$:
 
 $$G(t) = G_0 + A \cdot \sin(2\pi \cdot 0.08 \cdot t)$$
 
 Where $G_0 = 0.25$ and $A = 0.20$, modulating volume between $0.05$ and $0.45$.
 
-WHEN:
+3. WHEN:
 Runs in an isolated Web Audio processing thread whenever the Soundscape Drawer is active during quest immersion.
 
-WHY:
+4. WHY:
 Provides instant, responsive, and infinitely non-repeating acoustic relaxation environments with zero data bandwidth consumption, 0 bytes of network asset downloads, and zero battery drain from media streaming.
 
 --------------------------------------------------------------------------------
 DOMAIN 5: PHYSICAL SPRING DYNAMICS AND CUBIC-BEZIER MOTION CALCULUS
 --------------------------------------------------------------------------------
 
-WHAT:
+1. WHAT:
 Mathematical motion curves that give user interface components physical mass, momentum, velocity, and spring overshoot.
 
-HOW:
-1. Cubic-Bezier Parametric Formulation:
+2. HOW:
+• Cubic-Bezier Parametric Formulation:
 A parametric curve $B(t)$ for $t \in [0, 1]$ defined by control points $P_0(0,0), P_1(x_1,y_1), P_2(x_2,y_2), P_3(1,1)$:
 
 $$B(t) = (1-t)^3 P_0 + 3(1-t)^2 t P_1 + 3(1-t) t^2 P_2 + t^3 P_3$$
 
-2. EXTROVELA Spring Motion Coordinates:
+• EXTROVELA Spring Motion Coordinates:
 • `--ease-spring`: $P_1 = (0.175, 0.885), \quad P_2 = (0.32, 1.22)$
 • Peak Overshoot: $y_{\max} = 1.22$ (+22% spring pop expansion before resting at $1.0$).
 • Derivative Velocity: At $t=0$, initial acceleration $\frac{dy}{dt} = \frac{3y_1}{3x_1} = \frac{0.885}{0.175} \approx 5.05\text{ units/sec}$.
 
-3. Staggered Geometric Time Progression:
+• Staggered Geometric Time Progression:
 For card collections of count $M$, each item $k \in [1, M]$ delays entrance according to an arithmetic progression:
 
 $$\Delta t_k = t_{\text{base}} + (k - 1) \cdot 0.040 \text{ seconds}$$
 
-WHEN:
+3. WHEN:
 Applied across all interactive cards, bottom navigation tab selection, modal launches, and list renders.
 
-WHY:
+4. WHY:
 Emulates physical spring-damper dynamics found in native Apple iOS hardware, making the web interface feel tactile, weighted, and responsive.
 
 --------------------------------------------------------------------------------
 DOMAIN 6: CRYPTOGRAPHIC HMAC-SHA256 TOKENIZATION
 --------------------------------------------------------------------------------
 
-WHAT:
+1. WHAT:
 Cryptographic signing and verification of co-quest invitations and user session handoffs.
 
-HOW:
-1. Token Structure:
+2. HOW:
+• Token Structure:
 A URL-safe string structured as:
 
 $$\text{Token} = \text{Base64Url}(\text{Header}) \mathbin{\Vert} "." \mathbin{\Vert} \text{Base64Url}(\text{Payload}) \mathbin{\Vert} "." \mathbin{\Vert} \text{Base64Url}(\text{Signature})$$
 
-2. Hash-based Message Authentication Code:
+• Hash-based Message Authentication Code:
 
 $$\text{HMAC}(K, m) = H\Big((K' \oplus \text{opad}) \mathbin{\Vert} H\big((K' \oplus \text{ipad}) \mathbin{\Vert} m\big)\Big)$$
 
@@ -638,43 +599,43 @@ Where:
 • $\text{opad}$: Outer padding byte sequence `0x5C` repeated 64 times.
 • $m$: Concatenated $\text{Header} \mathbin{\Vert} "." \mathbin{\Vert} \text{Payload}$.
 
-3. Verification Condition:
+• Verification Condition:
 The gateway recomputes the signature over the received header and payload using constant-time comparison to prevent timing attacks:
 
 $$\operatorname{crypto.timingSafeEqual}(\text{Signature}_{\text{calc}}, \text{Signature}_{\text{received}}) == \text{true} \quad \land \quad T_{\text{current}} < T_{\text{expiry}}$$
 
-WHEN:
+3. WHEN:
 Generated when creating co-quest invite URLs and validated when a companion accesses an invite.
 
-WHY:
+4. WHY:
 Guarantees tamper-proof peer-to-peer invitation security without exposing database IDs, preventing link spoofing or unauthorized session interception.
 
 --------------------------------------------------------------------------------
 DOMAIN 7: DISCRETE GRID AREA COVERAGE AND CITY EXPLORATION GEOMETRY
 --------------------------------------------------------------------------------
 
-WHAT:
+1. WHAT:
 A spatial partitioning algorithm that tracks the percentage of a metropolitan area personally explored by the user.
 
-HOW:
-1. Bounding Box Tessellation:
+2. HOW:
+• Bounding Box Tessellation:
 For a designated city bounding box $[\phi_{\min}, \phi_{\max}] \times [\lambda_{\min}, \lambda_{\max}]$, the territory is partitioned into a discrete matrix of $M \times N$ cells of size $\Delta\phi \approx 0.0045^\circ$ and $\Delta\lambda \approx 0.0055^\circ$ ($\approx 500\text{m} \times 500\text{m}$ grid cells).
 
-2. Spatial Hash Mapping:
+• Spatial Hash Mapping:
 For any completed experience coordinate $(\phi_m, \lambda_m)$:
 
 $$\operatorname{Row} = \left\lfloor \frac{\phi_m - \phi_{\min}}{\Delta\phi} \right\rfloor, \quad \operatorname{Col} = \left\lfloor \frac{\lambda_m - \lambda_{\min}}{\Delta\lambda} \right\rfloor$$
 
 $$\text{Cell ID} = \operatorname{Row} \times N + \operatorname{Col}$$
 
-3. City Exploration Progress Metric:
+• City Exploration Progress Metric:
 
 $$\text{Exploration } \% = \min\left(100.0, \frac{|\text{Set of Unique Visited Cell IDs}|}{\text{Total Habitable Grid Cells in Municipality}} \times 100\right)$$
 
-WHEN:
+3. WHEN:
 Updated whenever a new memory containing geographic coordinates is saved.
 
-WHY:
+4. WHY:
 Provides a transparent, game-like exploration progress metric that incentivizes users to visit diverse neighborhoods across their city rather than repeating the same block.
 
 ================================================================================
