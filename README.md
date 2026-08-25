@@ -207,7 +207,7 @@ EXTROVELA utilizes a multi-tiered, decoupled client-server architecture designed
 flowchart TD
     UserAppLaunch([User Launches EXTROVELA]) --> InitHardware[Initialize Native Shell & Check Permissions]
     
-    subgraph GeoPipeline [1. Geolocation & Celestial Physics Pipeline]
+    subgraph GeoPipeline["1. Geolocation & Celestial Physics"]
         InitHardware --> QueryGPS[LocationService.getCurrentLocation]
         QueryGPS --> RunNominatim[OpenStreetMap Nominatim Reverse Geocoding]
         RunNominatim --> CityIdentified[City Resolved: Tokyo / London / New York / Kathmandu]
@@ -215,21 +215,21 @@ flowchart TD
         CityIdentified --> FetchMeteo[Query Open-Meteo Real-time Weather API]
     end
 
-    subgraph IntelligenceCore [2. Experience Intelligence & Entropy Engine]
+    subgraph IntelligenceCore["2. Experience Intelligence & Entropy Engine"]
         ComputeSun & FetchMeteo --> CalcEntropy[Calculate Recent Memory Shannon Entropy]
         CalcEntropy --> FilterQuests[Filter 180+ Curated Quest Master Repository]
-        FilterQuests --> CheckBackend{Backend AI Gateway Reachable?}
-        CheckBackend -- Reachable --> GeminiSynthesis[Gemini 1.5 Pro AI Personalization]
-        CheckBackend -- Offline / Timeout --> HeuristicRanking[Local Heuristic Ranking Strategy]
+        FilterQuests --> CheckBackend{"Backend AI Gateway Reachable?"}
+        CheckBackend -->|Yes| GeminiSynthesis[Gemini 1.5 Pro AI Personalization]
+        CheckBackend -->|No| HeuristicRanking[Local Heuristic Ranking Strategy]
     end
 
-    subgraph UIOrchestration [3. Mobile UI Presentation & Interaction]
+    subgraph UIOrchestration["3. Mobile UI Presentation & Interaction"]
         GeminiSynthesis & HeuristicRanking --> DisplayHero[Render Featured Quest with Ambient Pulse Aura]
         DisplayHero --> AcceptQuest[Explorer Accepts Real-World Quest]
         AcceptQuest --> ExecuteExperience[Real-World Phone-Free Immersion Mode]
     end
 
-    subgraph CaptureAndSync [4. Completion, Multimodal Proof & Cloud Sync]
+    subgraph CaptureAndSync["4. Completion, Multimodal Proof & Cloud Sync"]
         ExecuteExperience --> LaunchCapture[Open Capture Modal with Emil Kowalski Spring]
         LaunchCapture --> TakePhoto[Native Camera Proof Verification]
         LaunchCapture --> RecordAudio[15-Second Ambient Acoustic Recording]
@@ -446,7 +446,7 @@ EXTROVELA is built upon seven rigorous mathematical and algorithmic frameworks t
    * **Haversine Square Half-Chord:**
      $$a = \sin^2\left(\frac{\Delta\phi}{2}\right) + \cos(\phi_1) \cdot \cos(\phi_2) \cdot \sin^2\left(\frac{\Delta\lambda}{2}\right)$$
    * **Angular Distance in Radians:**
-     $$c = 2 \cdot \operatorname{atan2}\left(\sqrt{a}, \sqrt{1 - a}\right)$$
+     $$c = 2 \cdot \arctan\left(\frac{\sqrt{a}}{\sqrt{1 - a}}\right)$$
    * **Surface Distance ($R = 6371.0 \text{ km}$):**
      $$d = R \cdot c$$
 3. **WHEN:** Evaluated on map panning, proximity alerts, and when sorting nearby quests by walking distance.
@@ -474,7 +474,7 @@ EXTROVELA is built upon seven rigorous mathematical and algorithmic frameworks t
 1. **WHAT:** Cryptographic signing and verification of co-quest invitations and user session handoffs.
 2. **HOW:**
    * **Hash-based Message Authentication Code:**
-     $$\operatorname{HMAC}(K, m) = H\Big((K' \oplus \text{opad}) \mathbin{\Vert} H\big((K' \oplus \text{ipad}) \mathbin{\Vert} m\big)\Big)$$
+     $$\text{HMAC}(K, m) = H\Big((K' \oplus \text{opad}) \mathbin{\Vert} H\big((K' \oplus \text{ipad}) \mathbin{\Vert} m\big)\Big)$$
    * **Verification Condition:** Evaluated with constant-time comparison `crypto.timingSafeEqual` to prevent timing side-channel attacks.
 3. **WHEN:** Generated when creating co-quest invite URLs and validated when a companion accesses an invite.
 4. **WHY:** Guarantees tamper-proof peer-to-peer invitation security without exposing database IDs, preventing link spoofing or unauthorized session interception.
@@ -483,7 +483,7 @@ EXTROVELA is built upon seven rigorous mathematical and algorithmic frameworks t
 1. **WHAT:** A spatial partitioning algorithm that tracks the percentage of a metropolitan area personally explored by the user.
 2. **HOW:**
    * **Spatial Hash Mapping:**
-     $$\operatorname{Row} = \left\lfloor \frac{\phi_m - \phi_{\min}}{\Delta\phi} \right\rfloor, \quad \operatorname{Col} = \left\lfloor \frac{\lambda_m - \lambda_{\min}}{\Delta\lambda} \right\rfloor$$
+     $$\text{Row} = \left\lfloor \frac{\phi_m - \phi_{\min}}{\Delta\phi} \right\rfloor, \quad \text{Col} = \left\lfloor \frac{\lambda_m - \lambda_{\min}}{\Delta\lambda} \right\rfloor$$
    * **Exploration Progress Metric:**
      $$\text{Exploration } \% = \min\left(100.0, \frac{|\text{Set of Unique Visited Cell IDs}|}{\text{Total Habitable Grid Cells in Municipality}} \times 100\right)$$
 3. **WHEN:** Updated whenever a new memory containing geographic coordinates is saved.
@@ -816,7 +816,7 @@ The quest synthesis architecture inside `src/quest-engine/` is built as an exten
 3. **Personalization Scorer (`PersonalizationScorer.ts`):** Calculates multidimensional relevance scores across user mood, energy, and season vectors:
    $$\text{Score}(Q) = w_m \cdot S_{\text{mood}}(Q) + w_e \cdot S_{\text{energy}}(Q) + w_s \cdot S_{\text{season}}(Q) + w_n \cdot S_{\text{novelty}}(Q)$$
 4. **Ranking Strategy (`RankingStrategy.ts`):** Sorts filtered candidates using normalized composite scores and injects controlled stochastic jitter to ensure non-deterministic daily variety:
-   $$S_{\text{final}} = S_{\text{composite}} + \operatorname{Uniform}(-0.08, 0.08)$$
+   $$S_{\text{final}} = S_{\text{composite}} + \text{Uniform}(-0.08, 0.08)$$
 5. **Safety Engine (`SafetyEngine.ts`):** Validates that generated quests adhere to non-hazardous real-world safety rules (e.g. no trespassing, no late-night unlit trails for solo explorers, no high-risk physical stunts).
 6. **Learning System (`LearningSystem.ts`):** Monitors post-experience user feedback (`wouldDoAgain`, mood transformation delta) to calibrate individual category preferences over time.
 7. **Fallback Generator (`FallbackGenerator.ts`):** Guarantees zero-failure operation: if AI endpoints, database connections, and GPS services simultaneously fail, the fallback generator provides timeless, universal micro-adventures.
